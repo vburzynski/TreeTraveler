@@ -3,6 +3,18 @@ var chai = require('chai');
 var TreeTraveler = require('../src/treeTraveler');
 var TreeNode = require('../src/treeNode');
 
+var {
+  preorderTraversal,
+  reversePreorderTraversal,
+  inorderTraversal,
+  reverseorderTraversal,
+  postorderTraversal,
+  reversePostorderTraversal,
+  levelorderTraversal,
+  reverseLevelorderTraversal,
+  inverseLevelorderTraversal,
+} = require('../src/treeTraversal');
+
 // grab the expect object
 var expect = chai.expect;
 
@@ -45,6 +57,7 @@ describe('TreeTraveler', function () {
   // inverse-levelorder   each level bottom to top,nodes  right-left    9 8 7 6 5 4 3 2 1
 
   // TODO: write tests for .search()
+  // TODO: test callback separately
 
   describe('constructor', function () {
     it('should begin with a traversal order of preorder', function () {
@@ -98,79 +111,87 @@ describe('TreeTraveler', function () {
       function callback(node) {
         str += node.object + ' ';
       }
-      tree.preorderTraversal(tree.root, callback);
+      preorderTraversal(tree.root, callback);
       expect(str).to.equal('1 2 4 7 5 3 6 8 9 ');
     });
+
     it('should return the correct reversePreorder sequence', function () {
       var str = '';
 
       function callback(node) {
         str += node.object + ' ';
       }
-      tree.reversePreorderTraversal(tree.root, callback);
+      reversePreorderTraversal(tree.root, callback);
       expect(str).to.equal('1 3 6 9 8 2 5 4 7 ');
     });
+
     it('should return the correct postorder sequence', function () {
       var str = '';
 
       function callback(node) {
         str += node.object + ' ';
       }
-      tree.postorderTraversal(tree.root, callback);
+      postorderTraversal(tree.root, callback);
       expect(str).to.equal('7 4 5 2 8 9 6 3 1 ');
     });
+
     it('should return the correct reversePostorder sequence', function () {
       var str = '';
 
       function callback(node) {
         str += node.object + ' ';
       }
-      tree.reversePostorderTraversal(tree.root, callback);
+      reversePostorderTraversal(tree.root, callback);
       expect(str).to.equal('9 8 6 3 5 7 4 2 1 ');
     });
+
     it('should return the correct inorder sequence', function () {
       var str = '';
 
       function callback(node) {
         str += node.object + ' ';
       }
-      tree.inorderTraversal(tree.root, callback);
+      inorderTraversal(tree.root, callback);
       expect(str).to.equal('7 4 2 5 1 8 6 9 3 ');
     });
+
     it('should return the correct reverseorder sequence', function () {
       var str = '';
 
       function callback(node) {
         str += node.object + ' ';
       }
-      tree.reverseorderTraversal(tree.root, callback);
+      reverseorderTraversal(tree.root, callback);
       expect(str).to.equal('3 9 6 8 1 5 2 4 7 ');
     });
+
     it('should return the correct level-order sequence', function () {
       var str = '';
 
       function callback(node) {
         str += node.object + ' ';
       }
-      tree.levelorderTraversal(tree.root, callback);
+      levelorderTraversal(tree.root, callback);
       expect(str).to.equal('1 2 3 4 5 6 7 8 9 ');
     });
+
     it('should return the correct reverseLevelorder sequence', function () {
       var str = '';
 
       function callback(node) {
         str += node.object + ' ';
       }
-      tree.reverseLevelorderTraversal(tree.root, callback);
+      reverseLevelorderTraversal(tree.root, callback);
       expect(str).to.equal('1 3 2 6 5 4 9 8 7 ');
     });
+
     it('should return the correct inverseLevelorder sequence', function () {
       var str = '';
 
       function callback(node) {
         str += node.object + ' ';
       }
-      tree.inverseLevelorderTraversal(tree.root, callback);
+      inverseLevelorderTraversal(tree.root, callback);
       expect(str).to.equal('9 8 7 6 5 4 3 2 1 ');
     });
   });
