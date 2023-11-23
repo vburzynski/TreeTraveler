@@ -29,14 +29,14 @@ define(function (require) {
            7       8   9
         */
 
-        // preorder             root, children left-right   1 2 4 7 5 3 6 8 9
-        // reverse-preorder     root, children right-left   1 3 6 9 8 2 5 4 7
-        // postorder            children left-right, root   7 4 5 2 8 9 6 3 1
-        // reverse-postorder    children right-left, root   9 8 6 3 5 7 4 2 1
-        // inverse-preorder  === reverse-postorder          9 8 6 3 5 7 4 2 1
-        // inverse-postorder === reverse-preorder           9 8 6 3 5 7 4 2 1
-        // inorder              left, root, right           7 4 2 5 1 8 6 9 3
-        // reverseorder         right, root, left           3 9 6 8 1 5 2 4 7
+        // preorder             root, children left-right                     1 2 4 7 5 3 6 8 9
+        // reverse-preorder     root, children right-left                     1 3 6 9 8 2 5 4 7
+        // postorder            children left-right, root                     7 4 5 2 8 9 6 3 1
+        // reverse-postorder    children right-left, root                     9 8 6 3 5 7 4 2 1
+        // inverse-preorder  === reverse-postorder                            9 8 6 3 5 7 4 2 1
+        // inverse-postorder === reverse-preorder                             9 8 6 3 5 7 4 2 1
+        // inorder              left, root, right                             7 4 2 5 1 8 6 9 3
+        // reverseorder         right, root, left                             3 9 6 8 1 5 2 4 7
         // levelorder           each level top to bottom, nodes left-right    1 2 3 4 5 6 7 8 9
         // reverse-levelorder   each level top to bottom, nodes right-left    1 3 2 6 5 4 9 8 7
         // inverse-levelorder   each level bottom to top,nodes  right-left    9 8 7 6 5 4 3 2 1

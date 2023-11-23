@@ -1,33 +1,19 @@
 {
-    "name": "treelib",
-    "version": "0.1.0",
-    "description": "A javascript library focused on tree data structures.",
-    "author": "Valerie Burzynski",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/vburzynski/TreeTraveler.git"
-    },
-    "contributors": [
-        {
-            "name": "Valerie Burzynski",
-            "email": ""
-        }
-    ],
-    "keywords": ["tree","data","structure","traverse","sequence"],
-    "dependencies": {},
-    "devDependencies": {
-        "grunt": "~0.4.1",
-        "grunt-contrib-copy": "~0.5.0",
-        "grunt-contrib-connect": "~0.7.1",
-        "grunt-contrib-clean": "~0.5.0",
-        "grunt-mocha": "~0.4.10",
-        "grunt-newer": "~0.7.0",
-        "grunt-concurrent": "~0.5.0",
-        "load-grunt-tasks": "~0.4.0",
-        "time-grunt": "~0.3.1",
-        "jshint-stylish": "~0.1.5"
-    },
-    "engines": {
-        "node": ">=0.10.0"
-    }
+  "name": "treelib",
+  "version": "0.1.0",
+  "description": "A javascript library focused on tree data structures.",
+  "author": "Valerie Burzynski",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vburzynski/TreeTraveler.git"
+  },
+  "keywords": [
+    "tree",
+    "data",
+    "structure",
+    "traverse",
+    "sequence"
+  ],
+  "dependencies": {},
+  "devDependencies": {}
 }
