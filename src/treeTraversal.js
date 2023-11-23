@@ -14,15 +14,9 @@ function preorderTraversal(root, callback, shouldTrack) {
   // NOTE: when callback returns the boolean value of true, assume
   // we're performing a search and this is the node being saught.
   if (found === true) {
-    if (shouldTrack) {
-      return [root];
-    } else {
-      return root;
-    }
+    return shouldTrack ? [root] : root;
   } else {
-    var i = 0,
-      len = root.children.length;
-    for (i; i < len; i++) {
+    for (var i = 0; i < root.children.length; i++) {
       found = preorderTraversal(root.children[i], callback, shouldTrack);
       if (found) {
         if (Array.isArray(found)) {
@@ -46,11 +40,7 @@ function reversePreorderTraversal(root, callback, shouldTrack) {
   shouldTrack = !!shouldTrack;
   var found = callback(root);
   if (found === true) {
-    if (shouldTrack) {
-      return [root];
-    } else {
-      return root;
-    }
+    return shouldTrack ? [root] : root;
   } else {
     var i = root.children.length - 1;
     for (i; i >= 0; i--) {
@@ -92,11 +82,7 @@ function inorderTraversal(root, callback, shouldTrack) {
     // check node
     found = callback(root);
     if (found === true) {
-      if (shouldTrack) {
-        return [root];
-      } else {
-        return root;
-      }
+      return shouldTrack ? [root] : root;
     }
     // check right child
     result = inorderTraversal(root.children[1], callback, shouldTrack);
@@ -120,11 +106,7 @@ function inorderTraversal(root, callback, shouldTrack) {
     }
     found = callback(root);
     if (found === true) {
-      if (shouldTrack) {
-        return [root];
-      } else {
-        return root;
-      }
+      return shouldTrack ? [root] : root;
     } else {
       return null;
     }
@@ -132,11 +114,7 @@ function inorderTraversal(root, callback, shouldTrack) {
     // when there are no children
     found = callback(root);
     if (found === true) {
-      if (shouldTrack) {
-        return [root];
-      } else {
-        return root;
-      }
+      return shouldTrack ? [root] : root;
     } else {
       return null;
     }
@@ -168,11 +146,7 @@ function reverseorderTraversal(root, callback, shouldTrack) {
     }
     found = callback(root);
     if (found === true) {
-      if (shouldTrack) {
-        return [root];
-      } else {
-        return root;
-      }
+      return shouldTrack ? [root] : root;
     } else {
       result = reverseorderTraversal(root.children[0], callback, shouldTrack);
       if (Array.isArray(result)) {
@@ -183,11 +157,7 @@ function reverseorderTraversal(root, callback, shouldTrack) {
   } else if (root.children.length === 1) {
     found = callback(root);
     if (found === true) {
-      if (shouldTrack) {
-        return [root];
-      } else {
-        return root;
-      }
+      return shouldTrack ? [root] : root;
     } else {
       result = reverseorderTraversal(root.children[0], callback, shouldTrack);
       if (Array.isArray(result)) {
@@ -198,11 +168,7 @@ function reverseorderTraversal(root, callback, shouldTrack) {
   } else if (root.children.length === 0) {
     found = callback(root);
     if (found === true) {
-      if (shouldTrack) {
-        return [root];
-      } else {
-        return root;
-      }
+      return shouldTrack ? [root] : root;
     } else {
       return null;
     }
@@ -233,11 +199,7 @@ function postorderTraversal(root, callback, shouldTrack) {
   }
   var found = callback(root);
   if (found === true) {
-    if (shouldTrack) {
-      return [root];
-    } else {
-      return root;
-    }
+    return shouldTrack ? [root] : root;
   } else {
     return null;
   }
@@ -264,11 +226,7 @@ function reversePostorderTraversal(root, callback, shouldTrack) {
   }
   var found = callback(root);
   if (found === true) {
-    if (shouldTrack) {
-      return [root];
-    } else {
-      return root;
-    }
+    return shouldTrack ? [root] : root;
   } else {
     return null;
   }
