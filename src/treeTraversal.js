@@ -1,5 +1,5 @@
-var _ = require('lodash');
-
+// TODO: boundary traversal -- https://www.geeksforgeeks.org/tree-traversals-inorder-preorder-and-postorder/
+// TODO: diagonal traversal -- https://www.geeksforgeeks.org/tree-traversals-inorder-preorder-and-postorder/
 /**
  * Traverse tree in preorder ( root, children left to right )
  * @param {Object} root root of the tree
@@ -25,7 +25,7 @@ function preorderTraversal(root, callback, shouldTrack) {
     for (i; i < len; i++) {
       found = preorderTraversal(root.children[i], callback, shouldTrack);
       if (found) {
-        if (_.isArray(found)) {
+        if (Array.isArray(found)) {
           found.unshift(root);
         }
         return found;
@@ -56,7 +56,7 @@ function reversePreorderTraversal(root, callback, shouldTrack) {
     for (i; i >= 0; i--) {
       found = reversePreorderTraversal(root.children[i], callback, shouldTrack);
       if (found) {
-        if (_.isArray(found)) {
+        if (Array.isArray(found)) {
           found.unshift(root);
         }
         return found;
@@ -84,7 +84,7 @@ function inorderTraversal(root, callback, shouldTrack) {
     // if the result is defined and not false, return it.
     if (result) {
       // result contains the node found while traversing the left child
-      if (_.isArray(result)) {
+      if (Array.isArray(result)) {
         result.unshift(root);
       }
       return result;
@@ -101,7 +101,7 @@ function inorderTraversal(root, callback, shouldTrack) {
     // check right child
     result = inorderTraversal(root.children[1], callback, shouldTrack);
     if (result) {
-      if (_.isArray(result)) {
+      if (Array.isArray(result)) {
         result.unshift(root);
       }
       return result;
@@ -113,7 +113,7 @@ function inorderTraversal(root, callback, shouldTrack) {
     result = inorderTraversal(root.children[0], callback, shouldTrack);
     // if the result is defined and not false, return it.
     if (result) {
-      if (_.isArray(result)) {
+      if (Array.isArray(result)) {
         result.unshift(root);
       }
       return result;
@@ -161,7 +161,7 @@ function reverseorderTraversal(root, callback, shouldTrack) {
     result = reverseorderTraversal(root.children[1], callback, shouldTrack);
     // if the result is defined and not false, return it.
     if (result) {
-      if (_.isArray(result)) {
+      if (Array.isArray(result)) {
         result.unshift(root);
       }
       return result;
@@ -175,7 +175,7 @@ function reverseorderTraversal(root, callback, shouldTrack) {
       }
     } else {
       result = reverseorderTraversal(root.children[0], callback, shouldTrack);
-      if (_.isArray(result)) {
+      if (Array.isArray(result)) {
         result.unshift(root);
       }
       return result;
@@ -190,7 +190,7 @@ function reverseorderTraversal(root, callback, shouldTrack) {
       }
     } else {
       result = reverseorderTraversal(root.children[0], callback, shouldTrack);
-      if (_.isArray(result)) {
+      if (Array.isArray(result)) {
         result.unshift(root);
       }
       return result;
@@ -225,7 +225,7 @@ function postorderTraversal(root, callback, shouldTrack) {
   for (i; i < len; i++) {
     result = postorderTraversal(root.children[i], callback, shouldTrack);
     if (result) {
-      if (_.isArray(result)) {
+      if (Array.isArray(result)) {
         result.unshift(root);
       }
       return result;
@@ -256,7 +256,7 @@ function reversePostorderTraversal(root, callback, shouldTrack) {
   for (var i = root.children.length - 1; i >= 0; i--) {
     result = reversePostorderTraversal(root.children[i], callback, shouldTrack);
     if (result) {
-      if (_.isArray(result)) {
+      if (Array.isArray(result)) {
         result.unshift(root);
       }
       return result;

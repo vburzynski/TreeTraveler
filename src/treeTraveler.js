@@ -1,5 +1,4 @@
 var TreeNode = require('./treeNode');
-var _ = require('lodash');
 var {
   preorderTraversal,
   reversePreorderTraversal,
@@ -15,6 +14,10 @@ var {
 var defaults = {
   shouldLoop: false,
   order: 'preorder',
+};
+
+function is(type, obj) {
+  return obj !== undefined && obj !== null && type === Object.prototype.toString.call(obj).slice(8, -1);
 };
 
 /**
@@ -46,11 +49,11 @@ function validOrder(order) {
 function buildFromArray(arr, parentNode, callback) {
   var node, i;
   for (i = 0; i < arr.length; i++) {
-    if (_.isArray(arr[i])) {
+    if (Array.isArray(arr[i])) {
       buildFromArray(arr[i], node, callback);
     } else {
       node = new TreeNode(arr[i]);
-      if (_.isFunction(callback)) {
+      if (typeof callback === 'function') {
         callback(node);
       }
       if (parentNode) {
@@ -101,7 +104,7 @@ TreeTraveler.prototype = {
    * Builds a tree from an array
    * @param {Array} arr multi-dimensional array of values
    */
-  build: function (arr, callback) {
+  build: function (arr, callback = () => {}) {
     this.root = buildFromArray(arr, null, callback);
     this.reset();
     return this;
@@ -151,7 +154,7 @@ TreeTraveler.prototype = {
    * @param {Function} conditionFn - function which accepts a treeNode object and returns true or false
    */
   setConditionCheck: function (conditionFn) {
-    if (conditionFn && _.isFunction(conditionFn)) {
+    if (typeof conditionFn === 'function') {
       this.conditionFn = conditionFn;
     }
     return this;
@@ -197,7 +200,7 @@ TreeTraveler.prototype = {
    * @param {number} [num=0] - number of levels to move up
    */
   up: function (num) {
-    num = _.isNumber(num) ? num : 1;
+    num = is('Number', num) ? num : 1;
     this.node = this.path.pop();
     // while the path contains more than just the root node and num is > 0
     while (this.path.length > 1 && num > 0) {
@@ -213,7 +216,7 @@ TreeTraveler.prototype = {
    * Drill down to a descendent of the current node
    */
   down: function (position) {
-    if (_.isArray(position)) {
+    if (Array.isArray(position)) {
       var i,
         index,
         parentNode = this.node;
@@ -241,8 +244,8 @@ TreeTraveler.prototype = {
    */
   skip: function (direction, num, depth) {
     direction = direction || 'path';
-    num = _.isNumber(num) ? num : 1;
-    depth = _.isNumber(depth) ? Math.abs(depth) : 0;
+    num = is('Number', num) ? num : 1;
+    depth = is('Number', depth) ? Math.abs(depth) : 0;
     var parentNode, fn, currNode, len;
 
     // if depth was provided, move up the path to a direct ancestor
@@ -267,7 +270,7 @@ TreeTraveler.prototype = {
         break;
       // skip back to a previous node in the sequence
       case 'prev':
-        if (_.isNumber(num) && num > 0) {
+        if (is('Number', num) && num > 0) {
           fn = function () {
             num--;
             return num <= 0;
@@ -277,7 +280,7 @@ TreeTraveler.prototype = {
         break;
       // skip to a sibling
       case 'sibling':
-        if (_.isNumber(num) && num !== 0) {
+        if (is('Number', num) && num !== 0) {
           currNode = this.path.pop();
           parentNode = this.path[this.path.length - 1];
           // get index of node in parent's children array
@@ -310,7 +313,7 @@ TreeTraveler.prototype = {
         this.path.pop();
         parentNode = this.path[this.path.length - 1];
         len = parentNode.children.length;
-        if (_.isNumber(num) && num > 0) {
+        if (is('Number', num) && num > 0) {
           currNode = parentNode.children[num];
         } else {
           currNode = parentNode.children[0];
@@ -323,7 +326,7 @@ TreeTraveler.prototype = {
         this.path.pop();
         parentNode = this.path[this.path.length - 1];
         var end = parentNode.children.length - 1;
-        if (_.isNumber(num) && num > 0) {
+        if (is('Number', num) && num > 0) {
           currNode = parentNode.children[end - num];
         } else {
           currNode = parentNode.children[end];
@@ -343,7 +346,7 @@ TreeTraveler.prototype = {
       return node === target;
     };
     var result = preorderTraversal(this.root, findFn, true);
-    if (result && _.isArray(result)) {
+    if (result && Array.isArray(result)) {
       this.path = result;
       this.node = target;
     }
@@ -355,7 +358,7 @@ TreeTraveler.prototype = {
    * @param {Array} position - array of indexes leading to targeted node.
    */
   sendToPosition: function (position) {
-    if (_.isArray(position)) {
+    if (Array.isArray(position)) {
       this.reset();
       this.down(position);
     }
@@ -414,7 +417,7 @@ TreeTraveler.prototype.findNextPreorder = function (path, fn) {
   var result, currNode, parentNode, i, len;
 
   // check sub-tree first
-  if (_.has(this.node, 'children')) {
+  if (this.node.children) {
     for (i = 0; i < this.node.children.length; i++) {
       result = preorderTraversal(this.node.children[i], fn, true);
       if (result !== false) {
@@ -457,7 +460,7 @@ TreeTraveler.prototype.findNextPreorder = function (path, fn) {
 TreeTraveler.prototype.findNextReversePreorder = function (path, fn) {
   var result, currNode, parentNode, i;
   // check sub-tree
-  if (_.has(this.node, 'children')) {
+  if (this.node.children) {
     i = this.node.children.length - 1;
     for (i; i >= 0; i--) {
       result = preorderTraversal(this.node.children[i], fn, true);
@@ -501,7 +504,7 @@ TreeTraveler.prototype.findNextInorder = function (path, fn) {
   while (path.length > 0) {
     currNode = path[path.length - 1];
     // left descendents of this node appear before this one. no need to check them.
-    if (_.has(currNode, 'children') && currNode.children.length > 0) {
+    if (currNode.children?.length > 0) {
       // currNode only has left descendents
       if (currNode.children.length === 1) {
         if (currNode !== this.node) {
@@ -548,7 +551,7 @@ TreeTraveler.prototype.findNextReverseorder = function (path, fn) {
   var prevNode = null;
   while (path.length > 0) {
     currNode = path[path.length - 1];
-    if (_.has(currNode, 'children') && currNode.children.length > 0 && currNode.children[0] !== prevNode) {
+    if (currNode.children?.length > 0 && currNode.children[0] !== prevNode) {
       // doesn't matter if this node has right children or not, they're before this node in the order.
       // check this node if its not the node we started at.
       // don't check the node if the right child is the previous node.

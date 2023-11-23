@@ -1,4 +1,3 @@
-var _ = require('lodash');
 var chai = require('chai');
 var TreeTraveler = require('../src/treeTraveler');
 var TreeNode = require('../src/treeNode');
@@ -73,9 +72,6 @@ describe('TreeTraveler', function () {
   });
 
   describe('build()', function () {
-    it('should be a function', function () {
-      expect(_.isFunction(tree.build)).to.be.true;
-    });
     it('must return the root of the new tree structure', function () {
       expect(tree.root).to.be.an.instanceOf(TreeNode);
       expect(tree.root.get()).to.equal(1);
