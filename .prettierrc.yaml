@@ -44,9 +44,9 @@ singleAttributePerLine: false
 
 # different configuration for certain file patterns
 overrides:
-  - files: "*.scss"
+  - files: '*.scss'
     options:
       singleQuote: false
-  - files: "*.yml"
+  - files: '*.yml'
     options:
       singleQuote: false
