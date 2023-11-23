@@ -44,6 +44,8 @@ describe('TreeTraveler', function () {
   // reverse-levelorder   each level top to bottom, nodes right-left    1 3 2 6 5 4 9 8 7
   // inverse-levelorder   each level bottom to top,nodes  right-left    9 8 7 6 5 4 3 2 1
 
+  // TODO: write tests for .search()
+
   describe('constructor', function () {
     it('should begin with a traversal order of preorder', function () {
       expect(tree.settings.order).to.equal('preorder');
