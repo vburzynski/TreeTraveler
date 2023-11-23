@@ -1,7 +1,6 @@
 var chai = require('chai');
 var TreeTraveler = require('../src/treeTraveler');
 var TreeNode = require('../src/treeNode');
-
 var {
   preorderTraversal,
   reversePreorderTraversal,
@@ -16,6 +15,17 @@ var {
 
 // grab the expect object
 var expect = chai.expect;
+
+// TODO: write tests for .search()
+// TODO: test callback separately
+// TODO: I think the path needs to be tested further.
+// I don't know if it's always right.
+// Or I'm not catching what I meant for it.
+// or it's serving dual purposes in different situations
+// There's a smell I can't quite place at this moment
+// Oh wait... up() and down() are NOT tested. I don't think they're working.
+// TODO: I need to test with more tree structures
+// TODO: test with object values in the tree, or multiple properties on the TreeNode
 
 describe('TreeTraveler', function () {
   var tree;
@@ -54,9 +64,6 @@ describe('TreeTraveler', function () {
   // levelorder           each level top to bottom, nodes left-right    1 2 3 4 5 6 7 8 9
   // reverse-levelorder   each level top to bottom, nodes right-left    1 3 2 6 5 4 9 8 7
   // inverse-levelorder   each level bottom to top,nodes  right-left    9 8 7 6 5 4 3 2 1
-
-  // TODO: write tests for .search()
-  // TODO: test callback separately
 
   describe('constructor', function () {
     it('should begin with a traversal order of preorder', function () {
@@ -232,6 +239,7 @@ describe('TreeTraveler', function () {
       tree.next();
       expect(tree.node.object).to.equal(9);
     });
+
     it('should travel to the next node when order is "inorder"', function () {
       //'7 4 2 5 1 8 6 9 3 '
       tree.setOrder('inorder');
@@ -253,6 +261,7 @@ describe('TreeTraveler', function () {
       tree.next();
       expect(tree.node.object).to.equal(3);
     });
+
     it('should travel to the next node when order is "postorder"', function () {
       //'7 4 5 2 8 9 6 3 1 '
       tree.setOrder('postorder');
@@ -274,6 +283,7 @@ describe('TreeTraveler', function () {
       tree.next();
       expect(tree.node.object).to.equal(1);
     });
+
     it('should travel to the next node when order is "levelorder"', function () {
       //'1 2 3 4 5 6 7 8 9 '
       tree.setOrder('levelorder');
@@ -295,6 +305,7 @@ describe('TreeTraveler', function () {
       tree.next();
       expect(tree.node.object).to.equal(9);
     });
+
     it('should travel to the next node when order is "inverse-levelorder"', function () {
       // 9 8 7 6 5 4 3 2 1
       tree.setOrder('inverse-levelorder');
@@ -316,6 +327,7 @@ describe('TreeTraveler', function () {
       tree.next();
       expect(tree.node.object).to.equal(1);
     });
+
     it('should travel to the next node when order is "reverse-preorder"', function () {
       //1 3 6 9 8 2 5 4 7
       tree.setOrder('reverse-preorder');
@@ -337,6 +349,7 @@ describe('TreeTraveler', function () {
       tree.next();
       expect(tree.node.object).to.equal(7);
     });
+
     it('should travel to the next node when order is "reverse-postorder"', function () {
       //9 8 6 3 5 7 4 2 1
       tree.setOrder('reverse-postorder');
@@ -358,6 +371,7 @@ describe('TreeTraveler', function () {
       tree.next();
       expect(tree.node.object).to.equal(1);
     });
+
     it('should travel to the next node when order is "reverseorder"', function () {
       //3 9 6 8 1 5 2 4 7
       tree.setOrder('reverseorder');
@@ -379,6 +393,7 @@ describe('TreeTraveler', function () {
       tree.next();
       expect(tree.node.object).to.equal(7);
     });
+
     it('should accept a utilize condition function', function () {
       var original = tree.conditionFn;
       tree.setConditionCheck(function (node) {
@@ -397,6 +412,7 @@ describe('TreeTraveler', function () {
       expect(tree.node.object).to.equal(8);
       tree.setConditionCheck(original);
     });
+
     it('should should stop at the end of the order', function () {
       tree.setOrder('inorder');
       tree.reset();
@@ -420,6 +436,7 @@ describe('TreeTraveler', function () {
       tree.next();
       expect(tree.node.object).to.equal(3);
     });
+
     it('should loop around if shouldLoop is set to true', function () {
       //'7 4 2 5 1 8 6 9 3 '
       tree.setOrder('inorder');
@@ -445,6 +462,7 @@ describe('TreeTraveler', function () {
       expect(tree.node.object).to.equal(7);
     });
   });
+
   describe('prev()', function () {
     it('should travel to the previous node when order is "preorder"', function () {
       // 1 2 4 7 5 3 6 8 9
@@ -475,6 +493,7 @@ describe('TreeTraveler', function () {
       tree.prev();
       expect(tree.node.object).to.equal(1);
     });
+
     it('should travel to the previous node when order is "inorder"', function () {
       // 7 4 2 5 1 8 6 9 3
       tree.setOrder('inorder');
@@ -517,6 +536,7 @@ describe('TreeTraveler', function () {
       tree.prev();
       expect(tree.node.object).to.equal(7);
     });
+
     it('should travel to the previous node when order is "postorder"', function () {
       // 7 4 5 2 8 9 6 3 1
       tree.setOrder('postorder');
@@ -546,6 +566,7 @@ describe('TreeTraveler', function () {
       tree.prev();
       expect(tree.node.object).to.equal(7);
     });
+
     it('should travel to the previous node when order is "levelorder"', function () {
       tree.setOrder('levelorder');
       tree.next();
@@ -574,6 +595,7 @@ describe('TreeTraveler', function () {
       tree.prev();
       expect(tree.node.object).to.equal(1);
     });
+
     it('should should stop at the beginning of the order', function () {
       // 7 4 2 5 1 8 6 9 3
       tree.setOrder('inorder');
@@ -634,8 +656,13 @@ describe('TreeTraveler', function () {
     it('should move to a descendent of the current node');
   });
 
-  describe('send()', function () {
+  describe('sendTo()', function () {
     it('should move to a descendent of the root node');
+  });
+
+  describe('sendToPosition()', function () {
+    it('should move to a specific position in the order traversal');
+    it('its bounds are constrained by the number of items in the tree');
   });
 
   describe('destroy()', function () {
@@ -651,8 +678,9 @@ describe('TreeTraveler', function () {
     });
   });
 
-  // FUTURE implement more specific binary tree features
-  describe('forceBinary', function () {
-    it('should force node to only allow two children when true');
-  });
+  // FUTURE: perhaps build a separate binary tree traversal? it would need far more functionality for various searches and balancing, etc.
+  // FUTURE: implement more specific binary tree features
+  // describe('forceBinary', function () {
+  //   it('should force node to only allow two children when true');
+  // });
 });
