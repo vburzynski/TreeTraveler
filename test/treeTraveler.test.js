@@ -7,15 +7,18 @@ var TreeNode = require('../src/treeNode');
 var expect = chai.expect;
 
 describe('TreeTraveler', function () {
-  var tree,
-    queue = [];
+  var tree;
+  var queue = [];
 
   function queueNodes(node) {
     queue.push(node);
   }
 
-  tree = new TreeTraveler();
-  tree.build([1, [2, [4, [7], 5], 3, [6, [8, 9]]]], queueNodes);
+  beforeEach(function () {
+    queue = [];
+    tree = new TreeTraveler();
+    tree.build([1, [2, [4, [7], 5], 3, [6, [8, 9]]]], queueNodes);
+  });
 
   /*
   |           1
@@ -72,17 +75,17 @@ describe('TreeTraveler', function () {
   });
 
   describe('reset()', function () {
-    // TODO implement tests for reset
+    // TODO: implement tests for reset
     describe('should move the traveller back to the first node in the order sequence', function () {
-      it("preorder            - should return the tree's node paramter to treeNode with value of 1");
-      it("reverse-preorder    - should return the tree's node paramter to treeNode with value of 1");
-      it("postorder           - should return the tree's node paramter to treeNode with value of 7");
-      it("reverse-postorder   - should return the tree's node paramter to treeNode with value of 9");
-      it("inorder             - should return the tree's node paramter to treeNode with value of 7");
-      it("reverseorder        - should return the tree's node paramter to treeNode with value of 3");
-      it("levelorder          - should return the tree's node paramter to treeNode with value of 1");
-      it("reverse-levelorder  - should return the tree's node paramter to treeNode with value of 1");
-      it("inverse-levelorder  - should return the tree's node paramter to treeNode with value of 9");
+      it('preorder            - should return the tree\'s node paramter to treeNode with value of 1');
+      it('reverse-preorder    - should return the tree\'s node paramter to treeNode with value of 1');
+      it('postorder           - should return the tree\'s node paramter to treeNode with value of 7');
+      it('reverse-postorder   - should return the tree\'s node paramter to treeNode with value of 9');
+      it('inorder             - should return the tree\'s node paramter to treeNode with value of 7');
+      it('reverseorder        - should return the tree\'s node paramter to treeNode with value of 3');
+      it('levelorder          - should return the tree\'s node paramter to treeNode with value of 1');
+      it('reverse-levelorder  - should return the tree\'s node paramter to treeNode with value of 1');
+      it('inverse-levelorder  - should return the tree\'s node paramter to treeNode with value of 9');
     });
   });
 

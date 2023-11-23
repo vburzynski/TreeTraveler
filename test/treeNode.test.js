@@ -1,5 +1,6 @@
 var chai = require('chai');
 var TreeNode = require('../src/treeNode');
+const { beforeEach } = require('mocha');
 
 // grab the expect object
 var expect = chai.expect;
@@ -22,6 +23,7 @@ describe('TreeNode', function () {
       expect(node.forceBinary).to.be.false;
     });
   });
+
   describe('set()', function () {
     it('should set the object value of the TreeNode', function () {
       var node = new TreeNode();
@@ -29,6 +31,7 @@ describe('TreeNode', function () {
       expect(node.object).to.equal(544);
     });
   });
+
   describe('get()', function () {
     it('should return the object value of the TreeNode', function () {
       var node = new TreeNode();
@@ -41,6 +44,7 @@ describe('TreeNode', function () {
       expect(node.get()).to.deep.equal(obj);
     });
   });
+
   describe('clear()', function () {
     it('should clear the object value of the TreeNode', function () {
       var node = new TreeNode();
@@ -54,6 +58,7 @@ describe('TreeNode', function () {
       expect(node.object).to.be.null;
     });
   });
+
   describe('destroy()', function () {
     it('should destroy the TreeNode', function () {
       var key,
@@ -65,6 +70,7 @@ describe('TreeNode', function () {
       }
     });
   });
+
   describe('addChild()', function () {
     it('should add a child node as the next direct descendant', function () {
       var obj1 = {
@@ -85,6 +91,7 @@ describe('TreeNode', function () {
       expect(node1.children[2]).to.not.be.ok;
     });
   });
+
   describe('addChildAt()', function () {
     var node1 = new TreeNode({});
     var node2 = new TreeNode({
@@ -118,18 +125,23 @@ describe('TreeNode', function () {
     });
   });
   describe('getChildIndex()', function () {
-    var node1 = new TreeNode({});
-    var node2 = new TreeNode({
-      key: 'test',
+    let node1, node2, node3, node4;
+
+    beforeEach(function () {
+      node1 = new TreeNode({});
+      node2 = new TreeNode({
+        key: 'test',
+      });
+      node3 = new TreeNode({
+        key: 'hello world',
+      });
+      node4 = new TreeNode({
+        key: 'bla bla bla',
+      });
+      node1.addChild(node2);
+      node1.addChild(node3);
     });
-    var node3 = new TreeNode({
-      key: 'hello world',
-    });
-    var node4 = new TreeNode({
-      key: 'bla bla bla',
-    });
-    node1.addChild(node2);
-    node1.addChild(node3);
+
     it('should return the index of the specified child node', function () {
       expect(node1.getChildIndex(node2)).to.equal(0);
       expect(node1.getChildIndex(node3)).to.equal(1);
@@ -138,19 +150,23 @@ describe('TreeNode', function () {
       expect(node1.getChildIndex(node4)).to.equal(-1);
     });
   });
+
   describe('hasChild()', function () {
-    var node1 = new TreeNode({});
-    var node2 = new TreeNode({
-      key: 'test',
+    let node1, node2, node3, node4;
+    beforeEach(function () {
+      node1 = new TreeNode({});
+      node2 = new TreeNode({
+        key: 'test',
+      });
+      node3 = new TreeNode({
+        key: 'hello world',
+      });
+      node4 = new TreeNode({
+        key: 'bla bla bla',
+      });
+      node1.addChild(node2);
+      node1.addChild(node3);
     });
-    var node3 = new TreeNode({
-      key: 'hello world',
-    });
-    var node4 = new TreeNode({
-      key: 'bla bla bla',
-    });
-    node1.addChild(node2);
-    node1.addChild(node3);
     it('should return true when a node is stored as a child node of the parent', function () {
       expect(node1.hasChild(node2)).to.be.true;
       expect(node1.hasChild(node3)).to.be.true;
@@ -159,16 +175,20 @@ describe('TreeNode', function () {
       expect(node1.hasChild(node4)).to.be.false;
     });
   });
+
   describe('getChildAt()', function () {
-    var node1 = new TreeNode({});
-    var node2 = new TreeNode({
-      key: 'test',
+    let node1, node2, node3;
+    beforeEach(function () {
+      node1 = new TreeNode({});
+      node2 = new TreeNode({
+        key: 'test',
+      });
+      node3 = new TreeNode({
+        key: 'hello world',
+      });
+      node1.addChild(node2);
+      node1.addChild(node3);
     });
-    var node3 = new TreeNode({
-      key: 'hello world',
-    });
-    node1.addChild(node2);
-    node1.addChild(node3);
     it('should return the child node that exists at the specified index', function () {
       expect(node1.getChildAt(0)).to.equal(node2);
       expect(node1.getChildAt(1)).to.equal(node3);
@@ -177,20 +197,26 @@ describe('TreeNode', function () {
       expect(node1.getChildAt(2)).to.be.undefined;
     });
   });
+
   describe('removeChild()', function () {
-    var node1 = new TreeNode({});
-    var node2 = new TreeNode({
-      key: 'test',
+    let node1, node2, node3, node4;
+
+    beforeEach(function () {
+      node1 = new TreeNode({});
+      node2 = new TreeNode({
+        key: 'test',
+      });
+      node3 = new TreeNode({
+        key: 'hello world',
+      });
+      node4 = new TreeNode({
+        key: 'bla bla bla',
+      });
+      node1.addChild(node2);
+      node1.addChild(node3);
+      node1.addChild(node4);
     });
-    var node3 = new TreeNode({
-      key: 'hello world',
-    });
-    var node4 = new TreeNode({
-      key: 'bla bla bla',
-    });
-    node1.addChild(node2);
-    node1.addChild(node3);
-    node1.addChild(node4);
+
     it('should remove the specified child node', function () {
       node1.removeChild(node3);
       expect(node1.children[0]).to.equal(node2);
@@ -203,20 +229,25 @@ describe('TreeNode', function () {
       expect(node1.children[1]).to.equal(node4);
     });
   });
+
   describe('removeChildAt()', function () {
-    var node1 = new TreeNode({});
-    var node2 = new TreeNode({
-      key: 'test',
+    let node1, node2, node3, node4;
+    beforeEach(function () {
+      node1 = new TreeNode({});
+      node2 = new TreeNode({
+        key: 'test',
+      });
+      node3 = new TreeNode({
+        key: 'hello world',
+      });
+      node4 = new TreeNode({
+        key: 'bla bla bla',
+      });
+      node1.addChild(node2);
+      node1.addChild(node3);
+      node1.addChild(node4);
     });
-    var node3 = new TreeNode({
-      key: 'hello world',
-    });
-    var node4 = new TreeNode({
-      key: 'bla bla bla',
-    });
-    node1.addChild(node2);
-    node1.addChild(node3);
-    node1.addChild(node4);
+
     it('should remove the child node at the specified index', function () {
       node1.removeChildAt(1);
       expect(node1.children.length).to.equal(2);
