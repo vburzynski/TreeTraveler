@@ -395,7 +395,7 @@ describe('TreeTraveler', function () {
     });
 
     it('should accept a utilize condition function', function () {
-      var original = tree.conditionFn;
+      var original = tree.conditionCheck;
       tree.setConditionCheck(function (node) {
         if (node.object % 2 === 0) {
           return true;

@@ -31,7 +31,6 @@ treeNode.prototype = {
    */
   set: function (obj) {
     this.object = obj;
-    return this;
   },
 
   /**
@@ -46,7 +45,6 @@ treeNode.prototype = {
    */
   clear: function () {
     this.object = null;
-    return this;
   },
 
   /**
@@ -68,7 +66,6 @@ treeNode.prototype = {
     if (childNode instanceof treeNode) {
       this.children.push(childNode);
     }
-    return this;
   },
 
   /**
@@ -80,7 +77,6 @@ treeNode.prototype = {
     if (childNode instanceof treeNode) {
       this.children.splice(index, 0, childNode);
     }
-    return this;
   },
 
   /**
@@ -92,7 +88,6 @@ treeNode.prototype = {
     if (index > -1) {
       this.removeChildAt(index);
     }
-    return this;
   },
 
   /**
@@ -101,7 +96,6 @@ treeNode.prototype = {
    */
   removeChildAt: function (index) {
     this.children.splice(index, 1);
-    return this;
   },
 
   /**
