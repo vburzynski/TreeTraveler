@@ -96,7 +96,7 @@ describe('TreeTraveler', function () {
       function callback(node) {
         str += node.object + ' ';
       }
-      TreeTraveler.preorder(tree.root, callback);
+      tree.preorder(tree.root, callback);
       expect(str).to.equal('1 2 4 7 5 3 6 8 9 ');
     });
     it('should return the correct reversePreorder sequence', function () {
@@ -105,7 +105,7 @@ describe('TreeTraveler', function () {
       function callback(node) {
         str += node.object + ' ';
       }
-      TreeTraveler.reversePreorder(tree.root, callback);
+      tree.reversePreorder(tree.root, callback);
       expect(str).to.equal('1 3 6 9 8 2 5 4 7 ');
     });
     it('should return the correct postorder sequence', function () {
@@ -114,7 +114,7 @@ describe('TreeTraveler', function () {
       function callback(node) {
         str += node.object + ' ';
       }
-      TreeTraveler.postorder(tree.root, callback);
+      tree.postorder(tree.root, callback);
       expect(str).to.equal('7 4 5 2 8 9 6 3 1 ');
     });
     it('should return the correct reversePostorder sequence', function () {
@@ -123,7 +123,7 @@ describe('TreeTraveler', function () {
       function callback(node) {
         str += node.object + ' ';
       }
-      TreeTraveler.reversePostorder(tree.root, callback);
+      tree.reversePostorder(tree.root, callback);
       expect(str).to.equal('9 8 6 3 5 7 4 2 1 ');
     });
     it('should return the correct inorder sequence', function () {
@@ -132,7 +132,7 @@ describe('TreeTraveler', function () {
       function callback(node) {
         str += node.object + ' ';
       }
-      TreeTraveler.inorder(tree.root, callback);
+      tree.inorder(tree.root, callback);
       expect(str).to.equal('7 4 2 5 1 8 6 9 3 ');
     });
     it('should return the correct reverseorder sequence', function () {
@@ -141,7 +141,7 @@ describe('TreeTraveler', function () {
       function callback(node) {
         str += node.object + ' ';
       }
-      TreeTraveler.reverseorder(tree.root, callback);
+      tree.reverseorder(tree.root, callback);
       expect(str).to.equal('3 9 6 8 1 5 2 4 7 ');
     });
     it('should return the correct level-order sequence', function () {
@@ -150,7 +150,7 @@ describe('TreeTraveler', function () {
       function callback(node) {
         str += node.object + ' ';
       }
-      TreeTraveler.levelorder(tree.root, callback);
+      tree.levelorder(tree.root, callback);
       expect(str).to.equal('1 2 3 4 5 6 7 8 9 ');
     });
     it('should return the correct reverseLevelorder sequence', function () {
@@ -159,7 +159,7 @@ describe('TreeTraveler', function () {
       function callback(node) {
         str += node.object + ' ';
       }
-      TreeTraveler.reverseLevelorder(tree.root, callback);
+      tree.reverseLevelorder(tree.root, callback);
       expect(str).to.equal('1 3 2 6 5 4 9 8 7 ');
     });
     it('should return the correct inverseLevelorder sequence', function () {
@@ -168,7 +168,7 @@ describe('TreeTraveler', function () {
       function callback(node) {
         str += node.object + ' ';
       }
-      TreeTraveler.inverseLevelorder(tree.root, callback);
+      tree.inverseLevelorder(tree.root, callback);
       expect(str).to.equal('9 8 7 6 5 4 3 2 1 ');
     });
   });
