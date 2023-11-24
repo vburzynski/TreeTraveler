@@ -178,7 +178,7 @@ TreeTraveler.prototype = {
   /**
    * Travel to the next node in the previously specified order
    */
-  next: function () {
+  step: function () {
     var result = this.walk([...this.path]);
     if (result) {
       this.path = result;
@@ -191,7 +191,7 @@ TreeTraveler.prototype = {
   /**
    * Travel to the previous node in the order specified
    */
-  prev: function () {
+  back: function () {
     var result = this.findPrev([...this.path]);
     if (result) {
       this.path = result;
@@ -276,7 +276,7 @@ TreeTraveler.prototype = {
             num--;
             return num <= 0;
           };
-          this.next(fn);
+          this.step(fn);
         }
         break;
       // skip back to a previous node in the sequence
