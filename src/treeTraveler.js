@@ -21,7 +21,6 @@
 
 var TreeNode = require('./treeNode');
 var {
-  search,
   preorder,
   reversePreorder,
   inorder,
@@ -29,6 +28,7 @@ var {
   postorder,
   reversePostorder,
 } = require('./treeTraversal');
+var { Search } = require('./walkableMixin');
 
 var defaults = {
   shouldLoop: false,
@@ -38,6 +38,7 @@ var defaults = {
 function is(type, obj) {
   return obj !== undefined && obj !== null && type === Object.prototype.toString.call(obj).slice(8, -1);
 }
+
 
 /**
  * Indicates whether a order value is valid or not
@@ -133,7 +134,8 @@ TreeTraveler.prototype = {
    */
   reset: function () {
     // grab path to the first node in the current sequence
-    this.path = search(this.settings.order, this.root, this.conditionCheck, true);
+    var search = new Search(this.root, this.conditionCheck, true);
+    this.path = search.search(this.settings.order);
     this.node = this.path[this.path.length - 1];
   },
 
@@ -371,12 +373,12 @@ TreeTraveler.prototype = {
    * @returns {Boolean|Object} results of search
    */
   nextPreorder: function (path) {
-    var result, currNode, parentNode, i, len;
+    var result, currNode, parentNode, index, numChildren;
 
     // check sub-tree of the current node first
     if (this.node.children) {
-      for (i = 0; i < this.node.children.length; i++) {
-        result = preorder(this.node.children[i], this.conditionCheck, true);
+      for (index = 0; index < this.node.children.length; index++) {
+        result = preorder(this.node.children[index], this.conditionCheck, true);
         if (result) {
           return path.concat(result);
         }
@@ -389,10 +391,10 @@ TreeTraveler.prototype = {
       parentNode = path[path.length - 1];
 
       // traverse through older children
-      i = parentNode.children.indexOf(currNode) + 1;
-      len = parentNode.children.length;
-      for (i; i < len; i++) {
-        result = preorder(parentNode.children[i], this.conditionCheck, true);
+      index = parentNode.children.indexOf(currNode) + 1;
+      numChildren = parentNode.children.length;
+      for (index; index < numChildren; index++) {
+        result = preorder(parentNode.children[index], this.conditionCheck, true);
         if (result) {
           return path.concat(result);
         }

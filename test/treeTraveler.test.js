@@ -12,20 +12,14 @@ var {
   reverseLevelorder,
   inverseLevelorder,
 } = require('../src/treeTraversal');
+const { Search } = require('../src/walkableMixin');
 
 // grab the expect object
 var expect = chai.expect;
 
 // TODO: helper to reset to end of order();
-
 // TODO: write tests for .search()
-// TODO: test callback separately
-// TODO: I think the path needs to be tested further.
-// I don't know if it's always right.
-// Or I'm not catching what I meant for it.
-// or it's serving dual purposes in different situations
-// There's a smell I can't quite place at this moment
-// Oh wait... up() and down() are NOT tested. I don't think they're working.
+// TODO: test callback behavior separately
 // TODO: I need to test with more tree structures
 // TODO: test with object values in the tree, or multiple properties on the TreeNode
 
@@ -33,37 +27,19 @@ describe('TreeTraveler', function () {
   var tree;
   var queue = [];
 
-  function queueNodes(node) {
-    queue.push(node);
-  }
-
   var treeFixtureA = [1, [2, [4, [7], 5], 3, [6, [8, 9]]]];
-  // [
-  //   1,
-  //   [
-  //     2,
-  //     [
-  //       4,
-  //       [
-  //         7
-  //       ],
-  //       5
-  //     ],
-  //     3,
-  //     [
-  //       6,
-  //       [
-  //         8,
-  //         9
-  //       ]
-  //     ]
-  //   ]
-  // ];
-  // var treeFixtureB = ['A', ['B', ['D', 'E'], 'C', ['F', 'G']]];
-  beforeEach(function () {
+  var treeFixtureB = ['A', ['B', ['D', 'E'], 'C', ['F', 'G']]];
+
+  function setupTree() {
     queue = [];
     tree = new TreeTraveler();
-    tree.build(treeFixtureA, queueNodes);
+    tree.build(treeFixtureA, (node) => {
+      queue.push(node);
+    });
+  }
+
+  beforeEach(function () {
+    setupTree();
   });
 
   /*
@@ -80,118 +56,122 @@ describe('TreeTraveler', function () {
   | https://rosettacode.org/wiki/Tree_traversal
   */
 
-  // reverse (same direction of travel for depth, but reversing direction of visting children)
-  // inverse (invert the entire order)
+  // Travel path
+  //   for level-order
+  //     starting point - top level
+  //     we zig-zag in a z-shaped scanning pattern
+  //     sequentially traverse each level, and all the nodes in each level
+  //     the depth serves as a conceptual anchor for each scan
+  //   for non-level-order
+  //      the root serves as the starting point
+  //      we anchor the root node (before, after, or between child nodes)
+  //      each
+  //      this is determined by where
   //
-  // preorder             root, children left to right                     1 2 4 7 5 3 6 8 9
-  // reverse-preorder     root, children right to left                     1 3 6 9 8 2 5 4 7
-
-  // postorder            children left to right, root                     7 4 5 2 8 9 6 3 1
-  // reverse-postorder    children right to left, root                     9 8 6 3 5 7 4 2 1
+  // (normal)
+  //   depth: top to bottom
+  //   children: left to right
+  // reverse
+  //   depth: top to bottom (same direction of travel)
+  //   children: right to left (reversing direction)
+  // inverse (invert the entire order)
+  //   depth: bottom to top (reverse direction of travel)
+  //   children: right to left (reverse direction)
+  // inverse-reverse
+  //   depth: bottom to top (reverse direction of travel)
+  //   children: left to right (normal direction)
+  // ------------------------------------------------------------------------------------------------
+  // preorder                      root, children left to right                     1 2 4 7 5 3 6 8 9
+  // reverse-preorder              root, children right to left                     1 3 6 9 8 2 5 4 7
+  // inverse-postorder             root, children right to left                     1 3 6 9 8 2 5 4 7
+  // postorder                     children left to right, root                     7 4 5 2 8 9 6 3 1
+  // reverse-postorder             children right to left, root                     9 8 6 3 5 7 4 2 1
+  // ------------------------------------------------------------------------------------------------
+  // inorder                       left, root, right                                7 4 2 5 1 8 6 9 3
+  // reverseorder                  right, root, left                                3 9 6 8 1 5 2 4 7
+  // ------------------------------------------------------------------------------------------------
+  // levelorder                    each level top to bottom, nodes left to right    1 2 3 4 5 6 7 8 9
+  // reverse-levelorder            each level top to bottom, nodes right to left    1 3 2 6 5 4 9 8 7
+  // inverse-levelorder            each level bottom to top, nodes right to left    9 8 7 6 5 4 3 2 1
+  // inverse-reverse-levelorder    each level bottom to top, nodes left to right    7 8 9 4 5 6 2 3 1
+  // ------------------------------------------------------------------------------------------------
 
   // FIXME: this is wrong
   // inverse-postorder                                                     9 8 6 3 5 7 4 2 1
+  // FIXME: this is wrong
   // inverse-preorder                                                      9 8 6 3 5 7 4 2 1
-  // TODO: corrected...
-  // inverse-postorder    root, children right to left                     1 3 6 9 8 2 5 4 7
-  // reverse-postorder    children left to right, root                     7 4 5 2 8 9 6 3 1
-
-  // inorder              left, root, right                                7 4 2 5 1 8 6 9 3
-  // reverseorder         right, root, left                                3 9 6 8 1 5 2 4 7
-
-  // levelorder           each level top to bottom, nodes left to right    1 2 3 4 5 6 7 8 9
-  // reverse-levelorder   each level top to bottom, nodes right to left    1 3 2 6 5 4 9 8 7
-  // inverse-levelorder   each level bottom to top, nodes right o left     9 8 7 6 5 4 3 2 1
-  // ??????????????????   each level bottom to top, nodes left to right
 
   describe('Traversal Sequence', function () {
+    var searcher;
+    var nodes;
+
+    beforeEach(function () {
+      nodes = [];
+      searcher = new Search(tree.root, (node) => {
+        nodes.push(node.object);
+      });
+    });
+
     describe('preorder()', function () {
       it('should visit nodes in the correct preorder sequence', function () {
-        var arr = [];
-        preorder(tree.root, (node) => {
-          arr.push(node.object);
-        });
-        expect(arr).to.deep.equal([1, 2, 4, 7, 5, 3, 6, 8, 9,]);
+        searcher.search('preorder');
+        expect(nodes).to.deep.equal([1, 2, 4, 7, 5, 3, 6, 8, 9,]);
       });
     });
 
     describe('reversePreorder()', function () {
       it('should visit nodes in the correct reversePreorder sequence', function () {
-        var arr = [];
-        reversePreorder(tree.root, (node) => {
-          arr.push(node.object);
-        });
-        expect(arr).to.deep.equal([1, 3, 6, 9, 8, 2, 5, 4, 7,]);
+        searcher.search('reverse-preorder');
+        expect(nodes).to.deep.equal([1, 3, 6, 9, 8, 2, 5, 4, 7,]);
       });
     });
 
     describe('postorder()', function () {
       it('should visit nodes in the correct postorder sequence', function () {
-        var arr = [];
-        postorder(tree.root, (node) => {
-          arr.push(node.object);
-        });
-        expect(arr).to.deep.equal([7, 4, 5, 2, 8, 9, 6, 3, 1]);
+        searcher.search('postorder');
+        expect(nodes).to.deep.equal([7, 4, 5, 2, 8, 9, 6, 3, 1]);
       });
     });
 
     describe('reversePostorder()', function () {
       it('should visit nodes in the correct reversePostorder sequence', function () {
-        var arr = [];
-        reversePostorder(tree.root, (node) => {
-          arr.push(node.object);
-        });
-        expect(arr).to.deep.equal([9, 8, 6, 3, 5, 7, 4, 2, 1]);
+        searcher.search('reverse-postorder');
+        expect(nodes).to.deep.equal([9, 8, 6, 3, 5, 7, 4, 2, 1]);
       });
     });
 
     describe('inorder()', function () {
       it('should visit nodes in the correct inorder sequence', function () {
-        var arr = [];
-        inorder(tree.root, (node) => {
-          arr.push(node.object);
-        });
-        expect(arr).to.deep.equal([7, 4, 2, 5, 1, 8, 6, 9, 3]);
+        searcher.search('inorder');
+        expect(nodes).to.deep.equal([7, 4, 2, 5, 1, 8, 6, 9, 3]);
       });
     });
 
     describe('reverseorder()', function () {
       it('should visit nodes in the correct reverseorder sequence', function () {
-        var arr = [];
-        reverseorder(tree.root, (node) => {
-          arr.push(node.object);
-        });
-        expect(arr).to.deep.equal([3, 9, 6, 8, 1, 5, 2, 4, 7]);
+        searcher.search('reverseorder');
+        expect(nodes).to.deep.equal([3, 9, 6, 8, 1, 5, 2, 4, 7]);
       });
     });
 
     describe('levelorder()', function () {
       it('should visit nodes in the correct level-order sequence', function () {
-        var arr = [];
-        levelorder(tree.root, (node) => {
-          arr.push(node.object);
-        });
-        expect(arr).to.deep.equal([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        searcher.search('levelorder');
+        expect(nodes).to.deep.equal([1, 2, 3, 4, 5, 6, 7, 8, 9]);
       });
     });
 
     describe('reverseLevelorder()', function () {
       it('should visit nodes in the correct reverseLevelorder sequence', function () {
-        var arr = [];
-        reverseLevelorder(tree.root, (node) => {
-          arr.push(node.object);
-        });
-        expect(arr).to.deep.equal([1, 3, 2, 6, 5, 4, 9, 8, 7]);
+        searcher.search('reverse-levelorder');
+        expect(nodes).to.deep.equal([1, 3, 2, 6, 5, 4, 9, 8, 7]);
       });
     });
 
     describe('inverseLevelorder()', function () {
       it('should visit nodes in the correct inverseLevelorder sequence', function () {
-        var arr = [];
-        inverseLevelorder(tree.root, (node) => {
-          arr.push(node.object);
-        });
-        expect(arr).to.deep.equal([9, 8, 7, 6, 5, 4, 3, 2, 1]);
+        searcher.search('inverse-levelorder');
+        expect(nodes).to.deep.equal([9, 8, 7, 6, 5, 4, 3, 2, 1]);
       });
     });
   });
