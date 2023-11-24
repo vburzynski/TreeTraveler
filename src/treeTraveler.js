@@ -138,7 +138,7 @@ TreeTraveler.prototype = {
    */
   reset: function () {
     // grab path to the first node in the current sequence
-    this.path = this.search(this.settings.order, this.root, this.conditionCheck, true);
+    this.path = this.search(true);
     this.node = this.path[this.path.length - 1];
   },
 
@@ -380,41 +380,39 @@ TreeTraveler.prototype = {
 /**
  * traverse the tree (or sub-tree) in a specific order.
  * Stops traversal whenever the callback returns true.
- * @param {String} traversalOrder Order in which to traverse the tree
- * @param {TreeNode} root root of the tree
- * @param {Function} callback callback to execute for every node
  * @param {Boolean} trackPath when true, the search will return the path from the root to matching node
  * @returns {Array|Object} result of the traversal
  */
-TreeTraveler.prototype.search = function (traversalOrder, root, callback, trackPath) {
+TreeTraveler.prototype.search = function (trackPath) {
   // proceed based off the specified order
-  switch (traversalOrder) {
+  switch (this.settings.order) {
     case 'preorder':
-      return preorder(root, callback, trackPath);
+      return preorder(this.root, this.conditionCheck, trackPath);
     case 'reverse-preorder':
     case 'inverse-postorder':
-      return reversePreorder(root, callback, trackPath);
+      return reversePreorder(this.root, this.conditionCheck, trackPath);
     case 'inorder':
-      return inorder(root, callback, trackPath);
+      return inorder(this.root, this.conditionCheck, trackPath);
     case 'reverseorder':
     case 'inverseorder':
     case 'reverse-inorder':
     case 'inverse-inorder':
-      return reverseorder(root, callback, trackPath);
+      return reverseorder(this.root, this.conditionCheck, trackPath);
     case 'postorder':
-      return postorder(root, callback, trackPath);
+      return postorder(this.root, this.conditionCheck, trackPath);
     case 'reverse-postorder':
     case 'inverse-preorder':
-      return reversePostorder(root, callback, trackPath);
+      return reversePostorder(this.root, this.conditionCheck, trackPath);
     case 'levelorder':
-      return levelorder(root, callback, trackPath);
+      return levelorder(this.root, this.conditionCheck, trackPath);
     case 'reverse-levelorder':
-      return reverseLevelorder(root, callback, trackPath);
+      return reverseLevelorder(this.root, this.conditionCheck, trackPath);
     case 'inverse-levelorder':
-      return inverseLevelorder(root, callback, trackPath);
+      return inverseLevelorder(this.root, this.conditionCheck, trackPath);
     case 'inverse-reverse-levelorder':
     case 'reverse-inverse-levelorder':
-      throw new Error(`${traversalOrder} is not implemented`);
+    default:
+      throw new Error(`${this.settings.order} is not implemented`);
   }
 };
 
@@ -659,13 +657,12 @@ TreeTraveler.prototype.nextLevelorder = function (path) {
   // check level to the right
   // continue to next level down
   var arr = [];
-  var tempFn = function (node) {
+  levelorder(this.root, (node) => {
     arr.push(node);
-  };
-  var findFn = function (node) {
-    return node === arr[i];
-  };
-  levelorder(this.root, tempFn, false);
+  }, false);
+
+  var findFn = (node) => node === arr[i];
+
   i = arr.indexOf(this.node) + 1;
   len = arr.length;
   for (i; i < len; i++) {
@@ -685,19 +682,19 @@ TreeTraveler.prototype.nextLevelorder = function (path) {
  * @returns {Boolean|Object} results of search
  */
 TreeTraveler.prototype.nextInverseLevelorder = function (path) {
-  var result, i, len;
+  var result;
+
   // check level to the left
   // continue to next level down
   var arr = [];
   var tempFn = function (node) {
     arr.push(node);
   };
-  var findFn = function (node) {
-    return node === arr[i];
-  };
   inverseLevelorder(this.root, tempFn, false);
-  i = arr.indexOf(this.node) + 1;
-  len = arr.length;
+
+  var findFn = (node) => node === arr[i];
+  var i = arr.indexOf(this.node) + 1;
+  var len = arr.length;
   for (i; i < len; i++) {
     result = this.conditionCheck(arr[i]);
     if (result) {
@@ -727,10 +724,6 @@ TreeTraveler.prototype.walk = function (path) {
       return this.nextPostorder(path);
     case 'reverse-postorder':
       return this.nextReversePostorder(path);
-    case 'levelorder':
-      return this.nextLevelorder(path);
-    case 'inverse-levelorder':
-      return this.nextInverseLevelorder(path);
     default:
       return false;
   }
@@ -761,12 +754,6 @@ TreeTraveler.prototype.findPrev = function (path) {
     case 'reverse-postorder':
       // invert the order: find next in preorder
       return this.nextPreorder(path);
-    case 'levelorder':
-      // invert the order: find next in inverseLevelorder
-      return this.nextInverseLevelorder(path);
-    case 'inverse-levelorder':
-      // invert the order: find next in levelorder
-      return this.nextLevelorder(path);
     default:
       return false;
   }

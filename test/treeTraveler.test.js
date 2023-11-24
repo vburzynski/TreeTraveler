@@ -16,6 +16,8 @@ var {
 // grab the expect object
 var expect = chai.expect;
 
+// TODO: helper to reset to end of order();
+
 // TODO: write tests for .search()
 // TODO: test callback separately
 // TODO: I think the path needs to be tested further.
@@ -321,50 +323,6 @@ describe('TreeTraveler', function () {
       expect(tree.node.object).to.equal(1);
     });
 
-    it('should travel to the next node when order is "levelorder"', function () {
-      //'1 2 3 4 5 6 7 8 9 '
-      tree.setOrder('levelorder');
-      expect(tree.node.object).to.equal(1);
-      tree.next();
-      expect(tree.node.object).to.equal(2);
-      tree.next();
-      expect(tree.node.object).to.equal(3);
-      tree.next();
-      expect(tree.node.object).to.equal(4);
-      tree.next();
-      expect(tree.node.object).to.equal(5);
-      tree.next();
-      expect(tree.node.object).to.equal(6);
-      tree.next();
-      expect(tree.node.object).to.equal(7);
-      tree.next();
-      expect(tree.node.object).to.equal(8);
-      tree.next();
-      expect(tree.node.object).to.equal(9);
-    });
-
-    it('should travel to the next node when order is "inverse-levelorder"', function () {
-      // 9 8 7 6 5 4 3 2 1
-      tree.setOrder('inverse-levelorder');
-      expect(tree.node.object).to.equal(9);
-      tree.next();
-      expect(tree.node.object).to.equal(8);
-      tree.next();
-      expect(tree.node.object).to.equal(7);
-      tree.next();
-      expect(tree.node.object).to.equal(6);
-      tree.next();
-      expect(tree.node.object).to.equal(5);
-      tree.next();
-      expect(tree.node.object).to.equal(4);
-      tree.next();
-      expect(tree.node.object).to.equal(3);
-      tree.next();
-      expect(tree.node.object).to.equal(2);
-      tree.next();
-      expect(tree.node.object).to.equal(1);
-    });
-
     it('should travel to the next node when order is "reverse-preorder"', function () {
       //1 3 6 9 8 2 5 4 7
       tree.setOrder('reverse-preorder');
@@ -432,22 +390,17 @@ describe('TreeTraveler', function () {
     });
 
     it('should accept a utilize condition function', function () {
-      var original = tree.conditionCheck;
       tree.setConditionCheck(function (node) {
-        if (node.object % 2 === 0) {
-          return true;
-        }
-        return false;
+        return (node.object % 2 === 0);
       });
-      tree.setOrder('levelorder');
-      expect(tree.node.object).to.equal(2);
-      tree.next();
+      tree.setOrder('inorder');
       expect(tree.node.object).to.equal(4);
       tree.next();
-      expect(tree.node.object).to.equal(6);
+      expect(tree.node.object).to.equal(2);
       tree.next();
       expect(tree.node.object).to.equal(8);
-      tree.setConditionCheck(original);
+      tree.next();
+      expect(tree.node.object).to.equal(6);
     });
 
     it('should should stop at the end of the order', function () {
@@ -602,35 +555,6 @@ describe('TreeTraveler', function () {
       expect(tree.node.object).to.equal(4);
       tree.prev();
       expect(tree.node.object).to.equal(7);
-    });
-
-    it('should travel to the previous node when order is "levelorder"', function () {
-      tree.setOrder('levelorder');
-      tree.next();
-      tree.next();
-      tree.next();
-      tree.next();
-      tree.next();
-      tree.next();
-      tree.next();
-      tree.next();
-      expect(tree.node.object).to.equal(9);
-      tree.prev();
-      expect(tree.node.object).to.equal(8);
-      tree.prev();
-      expect(tree.node.object).to.equal(7);
-      tree.prev();
-      expect(tree.node.object).to.equal(6);
-      tree.prev();
-      expect(tree.node.object).to.equal(5);
-      tree.prev();
-      expect(tree.node.object).to.equal(4);
-      tree.prev();
-      expect(tree.node.object).to.equal(3);
-      tree.prev();
-      expect(tree.node.object).to.equal(2);
-      tree.prev();
-      expect(tree.node.object).to.equal(1);
     });
 
     it('should should stop at the beginning of the order', function () {

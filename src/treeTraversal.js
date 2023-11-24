@@ -1,6 +1,7 @@
 // TODO: boundary traversal -- https://www.geeksforgeeks.org/tree-traversals-inorder-preorder-and-postorder/
 // TODO: diagonal traversal -- https://www.geeksforgeeks.org/tree-traversals-inorder-preorder-and-postorder/
 // TODO: all of these are searching for a single item. A set of filter ones might be useful.
+// TODO: the logic around the node callbak, and the logic in the child loops might be extractable. (pass in callbacks to do the work, might make this more reusable)
 
 /**
  * Traverse tree in preorder ( node, children left to right )
@@ -298,7 +299,7 @@ function inverseLevelorder(node, callback, trackPath) {
   let currNode;
   let found;
 
-  // WARNING: this isn't very memory optimized, at some point you will have all nodes in a single sta
+  // WARNING: this isn't very memory optimized, at some point you will have all nodes in a single stack
   // LIFO - for reversing the order of the nodes...
   let stack = [];
 
