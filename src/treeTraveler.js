@@ -50,32 +50,6 @@ function validOrder(order) {
 }
 
 /**
- * Build a tree structure from a multi-dimensional array
- * Example: [1,[2,[4,[7],5],3,[6,[8,9]]]]
- * @param {Array} arr multi-dimensional array containing values
- * @param {Object} parentNode parent node
- * @param {Function} callback callback function
- * @returns {TreeNode} root TreeNode of the full tree structure
- */
-function buildFromArray(arr, parentNode, callback) {
-  var node;
-  for (var i = 0; i < arr.length; i++) {
-    if (Array.isArray(arr[i])) {
-      buildFromArray(arr[i], node, callback);
-    } else {
-      node = new TreeNode(arr[i]);
-      if (typeof callback === 'function') {
-        callback(node);
-      }
-      if (parentNode) {
-        parentNode.children.push(node);
-      }
-    }
-  }
-  return node;
-}
-
-/**
  * @constructor
  */
 var TreeTraveler = function (options) {
@@ -118,7 +92,7 @@ TreeTraveler.prototype = {
    * @param {Array} arr multi-dimensional array of values
    */
   build: function (arr, callback = () => {}) {
-    this.root = buildFromArray(arr, null, callback);
+    this.root = TreeNode.buildTreeFromArray(arr, null, callback);
     this.reset();
   },
 

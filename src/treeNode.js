@@ -2,9 +2,9 @@
  * Constructs a tree node object.
  * @constructor
  */
-var treeNode = function (obj) {
-  if (!(this instanceof treeNode)) {
-    return new treeNode(obj);
+var TreeNode = function (obj) {
+  if (!(this instanceof TreeNode)) {
+    return new TreeNode(obj);
   }
   if (obj) {
     this.object = obj;
@@ -14,7 +14,7 @@ var treeNode = function (obj) {
 };
 
 // Define all the instance methods and properties:
-treeNode.prototype = {
+TreeNode.prototype = {
   /**
    * Object stored in this node
    */
@@ -63,7 +63,7 @@ treeNode.prototype = {
    * @param {Object} childNode
    */
   addChild: function (childNode) {
-    if (childNode instanceof treeNode) {
+    if (childNode instanceof TreeNode) {
       this.children.push(childNode);
     }
   },
@@ -74,7 +74,7 @@ treeNode.prototype = {
    * @param {Object} index
    */
   addChildAt: function (childNode, index) {
-    if (childNode instanceof treeNode) {
+    if (childNode instanceof TreeNode) {
       this.children.splice(index, 0, childNode);
     }
   },
@@ -128,4 +128,28 @@ treeNode.prototype = {
   },
 };
 
-module.exports = treeNode;
+/**
+ * Build a tree structure from a multi-dimensional array
+ * @param {Array} arr multi-dimensional array containing values
+ * @param {Object} parentNode parent node
+ * @param {Function} callback callback function
+ * @returns {TreeNode} root TreeNode of the full tree structure
+ *
+ * @example:
+ *   TreeNode.buildTreeFromArray([1,[2,[4,[7],5],3,[6,[8,9]]]]);
+ */
+TreeNode.buildTreeFromArray = function(arr, parentNode, callback) {
+  var node;
+  for (var i = 0; i < arr.length; i++) {
+    if (Array.isArray(arr[i])) {
+      this.buildTreeFromArray(arr[i], node, callback);
+    } else {
+      node = new TreeNode(arr[i]);
+      if (typeof callback === 'function') callback(node);
+      if (parentNode) parentNode.children.push(node);
+    }
+  }
+  return node;
+}
+
+module.exports = TreeNode;
