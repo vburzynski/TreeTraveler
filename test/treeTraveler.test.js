@@ -35,10 +35,12 @@ describe('TreeTraveler', function () {
     queue.push(node);
   }
 
+  var treeFixtureA = [1, [2, [4, [7], 5], 3, [6, [8, 9]]]];
+  // var treeFixtureB = ['A', ['B', 'C']];
   beforeEach(function () {
     queue = [];
     tree = new TreeTraveler();
-    tree.build([1, [2, [4, [7], 5], 3, [6, [8, 9]]]], queueNodes);
+    tree.build(treeFixtureA, queueNodes);
   });
 
   /*
@@ -51,6 +53,8 @@ describe('TreeTraveler', function () {
   |     4   5   6
   |    /       / \
   |   7       8   9
+  |
+  | https://rosettacode.org/wiki/Tree_traversal
   */
 
   // preorder             root, children left-right                     1 2 4 7 5 3 6 8 9
@@ -65,48 +69,6 @@ describe('TreeTraveler', function () {
   // reverse-levelorder   each level top to bottom, nodes right-left    1 3 2 6 5 4 9 8 7
   // inverse-levelorder   each level bottom to top,nodes  right-left    9 8 7 6 5 4 3 2 1
 
-  describe('constructor', function () {
-    it('should begin with a traversal order of preorder', function () {
-      expect(tree.settings.order).to.equal('preorder');
-    });
-    it('should begin at the root node', function () {
-      expect(tree.node).to.equal(tree.root);
-    });
-    it('should begin with a path that includes just the root node', function () {
-      expect(tree.path.length).to.equal(1);
-      expect(tree.path[0]).to.equal(tree.root);
-    });
-  });
-
-  describe('build()', function () {
-    it('must return the root of the new tree structure', function () {
-      expect(tree.root).to.be.an.instanceOf(TreeNode);
-      expect(tree.root.get()).to.equal(1);
-    });
-  });
-
-  describe('setOrder()', function () {
-    it('should change the traversal order', function () {
-      tree.setOrder('postorder');
-      expect(tree.settings.order).to.equal('postorder');
-    });
-  });
-
-  describe('reset()', function () {
-    // TODO: implement tests for reset
-    describe('should move the traveller back to the first node in the order sequence', function () {
-      it('preorder            - should return the tree\'s node paramter to treeNode with value of 1');
-      it('reverse-preorder    - should return the tree\'s node paramter to treeNode with value of 1');
-      it('postorder           - should return the tree\'s node paramter to treeNode with value of 7');
-      it('reverse-postorder   - should return the tree\'s node paramter to treeNode with value of 9');
-      it('inorder             - should return the tree\'s node paramter to treeNode with value of 7');
-      it('reverseorder        - should return the tree\'s node paramter to treeNode with value of 3');
-      it('levelorder          - should return the tree\'s node paramter to treeNode with value of 1');
-      it('reverse-levelorder  - should return the tree\'s node paramter to treeNode with value of 1');
-      it('inverse-levelorder  - should return the tree\'s node paramter to treeNode with value of 9');
-    });
-  });
-
   describe('Traversal Sequence', function () {
     it('should return the correct preorder sequence', function () {
       var str = '';
@@ -114,7 +76,7 @@ describe('TreeTraveler', function () {
       function callback(node) {
         str += node.object + ' ';
       }
-      preorderTraversal(tree.root, callback);
+      var result = preorderTraversal(tree.root, callback);
       expect(str).to.equal('1 2 4 7 5 3 6 8 9 ');
     });
 
@@ -196,6 +158,48 @@ describe('TreeTraveler', function () {
       }
       inverseLevelorderTraversal(tree.root, callback);
       expect(str).to.equal('9 8 7 6 5 4 3 2 1 ');
+    });
+  });
+
+  describe('constructor', function () {
+    it('should begin with a traversal order of preorder', function () {
+      expect(tree.settings.order).to.equal('preorder');
+    });
+    it('should begin at the root node', function () {
+      expect(tree.node).to.equal(tree.root);
+    });
+    it('should begin with a path that includes just the root node', function () {
+      expect(tree.path.length).to.equal(1);
+      expect(tree.path[0]).to.equal(tree.root);
+    });
+  });
+
+  describe('build()', function () {
+    it('must return the root of the new tree structure', function () {
+      expect(tree.root).to.be.an.instanceOf(TreeNode);
+      expect(tree.root.get()).to.equal(1);
+    });
+  });
+
+  describe('setOrder()', function () {
+    it('should change the traversal order', function () {
+      tree.setOrder('postorder');
+      expect(tree.settings.order).to.equal('postorder');
+    });
+  });
+
+  describe('reset()', function () {
+    // TODO: implement tests for reset
+    describe('should move the traveller back to the first node in the order sequence', function () {
+      it('preorder            - should return the tree\'s node paramter to treeNode with value of 1');
+      it('reverse-preorder    - should return the tree\'s node paramter to treeNode with value of 1');
+      it('postorder           - should return the tree\'s node paramter to treeNode with value of 7');
+      it('reverse-postorder   - should return the tree\'s node paramter to treeNode with value of 9');
+      it('inorder             - should return the tree\'s node paramter to treeNode with value of 7');
+      it('reverseorder        - should return the tree\'s node paramter to treeNode with value of 3');
+      it('levelorder          - should return the tree\'s node paramter to treeNode with value of 1');
+      it('reverse-levelorder  - should return the tree\'s node paramter to treeNode with value of 1');
+      it('inverse-levelorder  - should return the tree\'s node paramter to treeNode with value of 9');
     });
   });
 

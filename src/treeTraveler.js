@@ -68,8 +68,8 @@ function validOrder(order) {
  * @returns {TreeNode} root TreeNode of the full tree structure
  */
 function buildFromArray(arr, parentNode, callback) {
-  var node, i;
-  for (i = 0; i < arr.length; i++) {
+  var node;
+  for (var i = 0; i < arr.length; i++) {
     if (Array.isArray(arr[i])) {
       buildFromArray(arr[i], node, callback);
     } else {
