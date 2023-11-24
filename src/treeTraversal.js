@@ -1,56 +1,57 @@
 // TODO: boundary traversal -- https://www.geeksforgeeks.org/tree-traversals-inorder-preorder-and-postorder/
 // TODO: diagonal traversal -- https://www.geeksforgeeks.org/tree-traversals-inorder-preorder-and-postorder/
+// TODO: all of these are searching for a single item. A set of filter ones might be useful.
+
 /**
- * Traverse tree in preorder ( root, children left to right )
- * @param {Object} root root of the tree
+ * Traverse tree in preorder ( node, children left to right )
+ * @param {TreeNode} node root of the tree or sub-tree
  * @param {Function} callback callback function to execute for each node
- * @param {Boolean} shouldTrack
+ * @param {Boolean} trackPath when true, returns the path from the node to the node that matches the search condition
  * @returns {Array|Boolean} Returns the result of the preorder
  */
-function preorderTraversal(root, callback, shouldTrack) {
-  shouldTrack = !!shouldTrack;
-  var found = callback(root);
-
-  // NOTE: when callback returns the boolean value of true, assume
-  // we're performing a search and this is the node being saught.
-  if (found === true) {
-    return shouldTrack ? [root] : root;
+function preorder(node, callback, trackPath) {
+  // visit the node first
+  var found = callback(node);
+  // NOTE: when callback returns a truthy value, assume we're performing a search
+  if (found) {
+    return trackPath ? [node] : node;
   }
 
-  for (var i = 0; i < root.children.length; i++) {
-    found = preorderTraversal(root.children[i], callback, shouldTrack);
+  // visit children from left to right
+  for (var i = 0; i < node.children.length; i++) {
+    found = preorder(node.children[i], callback, trackPath);
     if (found) {
       if (Array.isArray(found)) {
-        found.unshift(root);
+        found.unshift(node);
       }
       return found;
     }
   }
+
+  // if we get here, there's no match
   return null;
 };
 
 /**
- * Traverse tree in reverse preorder (root, children right to left)
- * @param {Object} root root of the tree
+ * Traverse tree in reverse preorder (node, children right to left)
+ * @param {TreeNode} node root of the tree or sub-tree
  * @param {Function} callback callback function
- * @param {Boolean} shouldTrack
+ * @param {Boolean} trackPath
  * @returns {Array|Boolean}
  */
-function reversePreorderTraversal(root, callback, shouldTrack) {
-  shouldTrack = !!shouldTrack;
-  var found = callback(root);
+function reversePreorder(node, callback, trackPath) {
+  var found = callback(node);
   if (found === true) {
-    return shouldTrack ? [root] : root;
+    return trackPath ? [node] : node;
   }
 
-  var i = root.children.length - 1;
-  for (i; i >= 0; i--) {
-    found = reversePreorderTraversal(root.children[i], callback, shouldTrack);
-    if (found) {
-      if (Array.isArray(found)) {
-        found.unshift(root);
+  for (var i = node.children.length - 1; i >= 0; i--) {
+    var result = reversePreorder(node.children[i], callback, trackPath);
+    if (result) {
+      if (Array.isArray(result)) {
+        result.unshift(node);
       }
-      return found;
+      return result;
     }
   }
   return null;
@@ -58,255 +59,230 @@ function reversePreorderTraversal(root, callback, shouldTrack) {
 
 /**
  * Traverse tree inorder
- * @param {Object} root
+ * this only works on binary trees
+ * @param {TreeNode} node
  * @param {Function} callback
- * @param {Boolean} shouldTrack
+ * @param {Boolean} trackPath
  * @returns {Array|Boolean}
  */
-function inorderTraversal(root, callback, shouldTrack) {
-  shouldTrack = !!shouldTrack;
+function inorder(node, callback, trackPath) {
   var result;
   var found;
-  // when there are two children
-  if (root.children.length === 2) {
-    // check left child
-    result = inorderTraversal(root.children[0], callback, shouldTrack);
+  if (node.children.length > 2) {
+    throw new Error('Inorder Traversal only works on binary trees');
+  }
+
+  // check left child
+  if (node.children?.[0]) {
+    result = inorder(node.children[0], callback, trackPath);
     // if the result is defined and not false, return it.
     if (result) {
       // result contains the node found while traversing the left child
       if (Array.isArray(result)) {
-        result.unshift(root);
+        result.unshift(node);
       }
       return result;
     }
-    // check node
-    found = callback(root);
-    if (found === true) {
-      return shouldTrack ? [root] : root;
-    }
-    // check right child
-    result = inorderTraversal(root.children[1], callback, shouldTrack);
+  }
+
+  // check node
+  found = callback(node);
+  if (found === true) {
+    return trackPath ? [node] : node;
+  }
+
+  // check right child
+  if (node.children[1]) {
+    result = inorder(node.children[1], callback, trackPath);
     if (result) {
       if (Array.isArray(result)) {
-        result.unshift(root);
+        result.unshift(node);
       }
       return result;
     }
-    // otherwise not found
-    return null;
-  } else if (root.children.length === 1) {
-    // when there is one child
-    result = inorderTraversal(root.children[0], callback, shouldTrack);
+  }
+
+  // otherwise not found
+  return null;
+};
+
+/**
+ * Traverse tree in reverse order ( right, node, left )
+ * This only works on binary trees
+ * @param {TreeNode} node
+ * @param {Function} callback
+ * @param {Boolean} trackPath
+ * @returns {Array|Boolean}
+ */
+function reverseorder(node, callback, trackPath) {
+  var result;
+  var found;
+
+  if (node.children.length > 2) {
+    throw new Error('Reverse Inorder Traversal only works on binary trees');
+  }
+
+  // check the right child node
+  if (node.children?.[1]) {
+    result = reverseorder(node.children[1], callback, trackPath);
     // if the result is defined and not false, return it.
     if (result) {
       if (Array.isArray(result)) {
-        result.unshift(root);
+        result.unshift(node);
       }
       return result;
     }
-    found = callback(root);
-    if (found === true) {
-      return shouldTrack ? [root] : root;
-    } else {
-      return null;
+  }
+
+  // check the node
+  found = callback(node);
+  if (found === true) {
+    return trackPath ? [node] : node;
+  }
+
+  // check the left child node
+  if (node.children?.[0]) {
+    result = reverseorder(node.children[0], callback, trackPath);
+    if (Array.isArray(result)) {
+      result.unshift(node);
     }
-  } else if (root.children.length === 0) {
-    // when there are no children
-    found = callback(root);
-    if (found === true) {
-      return shouldTrack ? [root] : root;
-    } else {
-      return null;
-    }
-  } else {
-    return null;
+    return result;
   }
 };
 
 /**
- * Traverse tree in reverse order ( right, root, left )
- * This only works on binary trees
- * @param {Object} root
+ * Traverse tree in post order ( children left to right, node )
+ * @param {TreeNode} node
  * @param {Function} callback
- * @param {Boolean} shouldTrack
+ * @param {Boolean} trackPath
  * @returns {Array|Boolean}
  */
-function reverseorderTraversal(root, callback, shouldTrack) {
-  shouldTrack = !!shouldTrack;
+function postorder(node, callback, trackPath) {
   var result;
-  var found;
-  if (root.children.length === 2) {
-    result = reverseorderTraversal(root.children[1], callback, shouldTrack);
-    // if the result is defined and not false, return it.
+
+  // check the child nodes left to right
+  for (var i = 0; i < node.children.length; i++) {
+    result = postorder(node.children[i], callback, trackPath);
     if (result) {
       if (Array.isArray(result)) {
-        result.unshift(root);
+        result.unshift(node);
       }
       return result;
     }
-    found = callback(root);
-    if (found === true) {
-      return shouldTrack ? [root] : root;
-    } else {
-      result = reverseorderTraversal(root.children[0], callback, shouldTrack);
-      if (Array.isArray(result)) {
-        result.unshift(root);
-      }
-      return result;
-    }
-  } else if (root.children.length === 1) {
-    found = callback(root);
-    if (found === true) {
-      return shouldTrack ? [root] : root;
-    } else {
-      result = reverseorderTraversal(root.children[0], callback, shouldTrack);
-      if (Array.isArray(result)) {
-        result.unshift(root);
-      }
-      return result;
-    }
-  } else if (root.children.length === 0) {
-    found = callback(root);
-    if (found === true) {
-      return shouldTrack ? [root] : root;
-    } else {
-      return null;
-    }
+  }
+
+  // check the node
+  var found = callback(node);
+  if (found === true) {
+    return trackPath ? [node] : node;
   }
   return null;
 };
 
 /**
- * Traverse tree in post order ( children left to right, root )
- * @param {Object} root
+ * Traverse tree in reverse post order ( children right to left, node )
+ * @param {TreeNode} node
  * @param {Function} callback
- * @param {Boolean} shouldTrack
+ * @param {Boolean} trackPath
  * @returns {Array|Boolean}
  */
-function postorderTraversal(root, callback, shouldTrack) {
-  shouldTrack = !!shouldTrack;
-
+function reversePostorder(node, callback, trackPath) {
   var result;
-  for (var i = 0; i < root.children.length; i++) {
-    result = postorderTraversal(root.children[i], callback, shouldTrack);
+
+  // walk the child nodes right to left
+  for (var i = node.children.length - 1; i >= 0; i--) {
+    result = reversePostorder(node.children[i], callback, trackPath);
     if (result) {
       if (Array.isArray(result)) {
-        result.unshift(root);
+        result.unshift(node);
       }
       return result;
     }
   }
 
-  var found = callback(root);
+  // check the node
+  var found = callback(node);
   if (found === true) {
-    return shouldTrack ? [root] : root;
-  } else {
-    return null;
-  }
-};
-
-/**
- * Traverse tree in reverse post order ( children right to left, root )
- * @param {Object} root
- * @param {Function} callback
- * @param {Boolean} shouldTrack
- * @returns {Array|Boolean}
- */
-function reversePostorderTraversal(root, callback, shouldTrack) {
-  shouldTrack = !!shouldTrack;
-
-  var result;
-  for (var i = root.children.length - 1; i >= 0; i--) {
-    result = reversePostorderTraversal(root.children[i], callback, shouldTrack);
-    if (result) {
-      if (Array.isArray(result)) {
-        result.unshift(root);
-      }
-      return result;
-    }
+    return trackPath ? [node] : node;
   }
 
-  var found = callback(root);
-  if (found === true) {
-    return shouldTrack ? [root] : root;
-  } else {
-    return null;
-  }
+  return null;
 };
 
 /**
  * Traverse tree in level order ( each tier, top to bottom, from left to right )
- * @param {*} root
+ * @param {TreeNode} node
  * @param {Function} callback
- * @param {Boolean} shouldTrack
+ * @param {Boolean} trackPath
  * @returns {Boolean}
  */
-function levelorderTraversal(root, callback, shouldTrack) {
-  shouldTrack = !!shouldTrack;
-
-  // start the queue with the root node
-  var queue = [root];
-  var node;
+function levelorder(node, callback, trackPath) {
+  // start the queue with the node node
+  var queue = [node];
+  var currNode;
   var found;
-  var fn = (n) => n === node;
+  var fn = (n) => n === currNode;
 
   // while there are queued nodes
   while (queue.length > 0) {
-    // execute callback with node at front
-    node = queue.shift();
-    found = callback(node);
+    // take the first queued node
+    currNode = queue.shift();
+
+    // check if that node is a match
+    found = callback(currNode);
     if (found === true) {
+      // WARNING: this is inefficient...
       // if tracking path to node, we need to find it
-      if (shouldTrack) {
-        return preorderTraversal(root, fn, true);
-      } else {
-        // otherwise just return the node found
-        return node;
+      if (trackPath) {
+        return preorder(node, fn, true);
       }
+      // otherwise just return the node found
+      return currNode;
     }
 
     // push all of the node's children onto the end of the queue
-    for (var i = 0; i < node.children.length; i++) {
-      queue.push(node.children[i]);
+    for (var i = 0; i < currNode.children.length; i++) {
+      queue.push(currNode.children[i]);
     }
   }
+
+  // if we get here, nothing matched
   return null;
 };
 
 /**
  * Traverse tree in reverse level order ( each tier, top to bottom, right to left )
- * @param {*} root
+ * @param {TreeNode} node
  * @param {Function} callback
- * @param {Boolean} shouldTrack
+ * @param {Boolean} trackPath
  * @returns {Boolean}
  */
-function reverseLevelorderTraversal(root, callback, shouldTrack) {
-  shouldTrack = !!shouldTrack;
-  var node;
+function reverseLevelorder(node, callback, trackPath) {
+  var currNode;
   var i;
   var found;
-  var queue = [root]; // start the queue with the root node
-  var fn = (node2) => node2 === node;
+
+  // start the queue with the node node
+  var queue = [node];
 
   // while there are queued nodes
   while (queue.length > 0) {
     // execute callback with node at front
-    node = queue.shift();
-    found = callback(node);
+    currNode = queue.shift();
+    found = callback(currNode);
     if (found === true) {
       // if tracking path to node, we need to find it
-      if (shouldTrack) {
-        return preorderTraversal(root, fn, true);
-      } else {
-        // otherwise just return the node found
-        return node;
+      if (trackPath) {
+        let fn = (node2) => node2 === currNode;
+        return preorder(node, fn, true);
       }
+      // otherwise just return the node found
+      return currNode;
     }
 
     // push all of the node's children onto the end of the queue
-    i = node.children.length - 1;
-    for (i; i >= 0; i--) {
-      queue.push(node.children[i]);
+    for (i = currNode.children.length - 1; i >= 0; i--) {
+      queue.push(currNode.children[i]);
     }
   }
   return null;
@@ -314,52 +290,63 @@ function reverseLevelorderTraversal(root, callback, shouldTrack) {
 
 /**
  * Traverse tree in inverse level order ( each tier, bottom to top, right to left )
- * @param {*} root
+ * @param {TreeNode} node
  * @param {Function} callback
- * @param {Boolean} shouldTrack
+ * @param {Boolean} trackPath
  * @returns {Boolean}
  */
-function inverseLevelorderTraversal(root, callback, shouldTrack) {
-  shouldTrack = !!shouldTrack;
-  let stack = [];
-  let queue = [root];
-  let node;
+function inverseLevelorder(node, callback, trackPath) {
+  let currNode;
   let found;
 
+  // WARNING: this isn't very memory optimized, at some point you will have all nodes in a single sta
+  // LIFO - for reversing the order of the nodes...
+  let stack = [];
+
+  // start the queue with the node node
+  let queue = [node];
+
+  // NOTE: this block is essentially the levelorder method, but we're using the stack to reverse everything
+  // while there are items in the queue...
   while (queue.length > 0) {
-    node = queue.shift();
-    stack.push(node);
-    for (var i = 0; i < node.children.length; i++) {
-      queue.push(node.children[i]);
+    // take the first node on the queue
+    currNode = queue.shift();
+    // push it onto the stack
+    stack.push(currNode);
+    // push all the node's children onto the queue
+    for (var i = 0; i < currNode.children.length; i++) {
+      queue.push(currNode.children[i]);
     }
   }
 
-  var fn = (node2) => node2 === node;
+  // callback function to be used if we're tracking the path to the found node
+  var findCurrentNode = (candidateNode) => candidateNode === currNode;
 
+  // now go through everything on the stack
   while (stack.length > 0) {
-    node = stack.pop();
-    found = callback(node);
+    currNode = stack.pop();
+    found = callback(currNode);
     if (found === true) {
       // if tracking path to node, we need to find it
-      if (shouldTrack) {
-        return preorderTraversal(root, fn, true);
-      } else {
-        // otherwise just return the node found
-        return node;
+      if (trackPath) {
+        return preorder(node, findCurrentNode, true);
       }
+
+      // otherwise just return the node found
+      return currNode;
     }
   }
   return null;
 };
 
 module.exports = {
-  preorderTraversal,
-  reversePreorderTraversal,
-  inorderTraversal,
-  reverseorderTraversal,
-  postorderTraversal,
-  reversePostorderTraversal,
-  levelorderTraversal,
-  reverseLevelorderTraversal,
-  inverseLevelorderTraversal,
+  preorder,
+  reversePreorder,
+  inorder,
+  reverseorder,
+  postorder,
+  reversePostorder,
+  levelorder,
+  reverseLevelorder,
+  inverseLevelorder,
 };
