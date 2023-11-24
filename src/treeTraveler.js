@@ -1,12 +1,4 @@
 var TreeNode = require('./treeNode');
-var {
-  preorder,
-  reversePreorder,
-  inorder,
-  reverseorder,
-  postorder,
-  reversePostorder,
-} = require('./treeTraversal');
 var Searcher = require('./Searcher');
 
 var defaults = {
@@ -112,7 +104,9 @@ TreeTraveler.prototype = {
    */
   destroy: function (shouldDestroyNodes) {
     if (shouldDestroyNodes) {
-      postorder(this.root, node => node.destroy());
+      new Searcher(this.root, (node) => {
+        node.destroy();
+      }).search('postorder');
     }
 
     this.root = null;
@@ -142,8 +136,11 @@ TreeTraveler.prototype = {
   /**
    * Travel to the next node in the previously specified order
    */
-  step: function () {
-    var result = this.walk([...this.path]);
+  step: function (direction = 'forward') {
+    var result = (direction === 'forward')
+      ? this.walkForward([...this.path])
+      : this.walkBackward([...this.path]);
+
     if (result) {
       this.path = result;
       this.node = this.path[this.path.length - 1];
@@ -156,13 +153,7 @@ TreeTraveler.prototype = {
    * Travel to the previous node in the order specified
    */
   back: function () {
-    var result = this.findPrev([...this.path]);
-    if (result) {
-      this.path = result;
-      this.node = this.path[this.path.length - 1];
-    } else if (this.settings.shouldLoop) {
-      this.reset();
-    }
+    this.step('backward');
   },
 
   /**
@@ -312,10 +303,8 @@ TreeTraveler.prototype = {
    * Send traveler/visitor to a specific node.
    */
   sendToNode: function (target) {
-    var findFn = function (node) {
-      return node === target;
-    };
-    var result = preorder(this.root, findFn, true);
+    var searcher = new Searcher(this.root, (node) => node === target, true);
+    var result = searcher.search('preorder');
     if (result && Array.isArray(result)) {
       this.path = result;
       this.node = target;
@@ -334,6 +323,14 @@ TreeTraveler.prototype = {
     }
   },
 
+  /*
+  FUTURE: Idea for not storing the path... ¯\_(ツ)_/¯
+  if we didn't store the path, we could use the walkable mixin functions.
+  You would use the callback and "skip" over all the nodes till you found the current node.
+  Then you would find the next node in the sequence order.
+  this would be more computationally expensive, but the logic would be simpler.
+  */
+
   /**
    * Find the next node in preorder sequence given an arbitrary node and the path to that node.
    * @param {Array} path array of nodes containing the path from the root to the arbitrary node
@@ -341,16 +338,21 @@ TreeTraveler.prototype = {
    */
   nextPreorder: function (path) {
     var result, currNode, parentNode, index, numChildren;
-
+    var searcher = new Searcher(null, this.conditionCheck, true);
     // check sub-tree of the current node first
+    // TODO: could probably use a searcher here?
     if (this.node.children) {
       for (index = 0; index < this.node.children.length; index++) {
-        result = preorder(this.node.children[index], this.conditionCheck, true);
-        if (result) {
-          return path.concat(result);
-        }
+        searcher.root = this.node.children[index];
+        result = searcher.search('preorder');
+        if (result) return path.concat(result);
       }
     }
+
+    /*
+    FUTURE: what if the searcher accepted a path to the node?
+    then for each level in recursion (or the tree), we skip straight to the appropriate node, and continue
+    */
 
     // we need to check older siblings of ancestors and their sub-trees
     while (path.length > 0) {
@@ -361,17 +363,14 @@ TreeTraveler.prototype = {
       index = parentNode.children.indexOf(currNode) + 1;
       numChildren = parentNode.children.length;
       for (index; index < numChildren; index++) {
-        result = preorder(parentNode.children[index], this.conditionCheck, true);
-        if (result) {
-          return path.concat(result);
-        }
+        searcher.root = parentNode.children[index];
+        result = searcher.search('preorder');
+        if (result) return path.concat(result);
       }
       // otherwise continue up path
     }
-
     // if we've reached this point, we're back at the root node.
     // there is no next node.
-    return false;
   },
 
   /**
@@ -381,36 +380,34 @@ TreeTraveler.prototype = {
    */
   nextReversePreorder: function (path) {
     var result, currNode, parentNode, i;
-    // check sub-tree
+    var searcher = new Searcher(this.node, this.conditionCheck, true);
+
+    // first check the sub-tree
     if (this.node.children) {
-      i = this.node.children.length - 1;
-      for (i; i >= 0; i--) {
-        result = preorder(this.node.children[i], this.conditionCheck, true);
-        if (result) {
-          return path.concat(result);
-        }
+      for (i = this.node.children.length - 1; i >= 0; i--) {
+        searcher.root = this.node.children[i];
+        result = searcher.search('reverse-preorder');
+        if (result) return path.concat(result);
       }
     }
+
     // check younger siblings
-    // check younger siblings of ancestors
+    // then check younger siblings of ancestors
+    // if no ancestors have younger siblings, we're at the end of the traversal
+
     // while the path contains more than just the root node
     while (path.length > 0) {
-      // pop off current node
       currNode = path.pop();
-      // get parent node as well
       parentNode = path[path.length - 1];
-      // get index of node in parent's children array
-      i = parentNode.children.indexOf(currNode) - 1;
+
       // traverse through older children
-      for (i; i >= 0; i--) {
-        result = reversePreorder(parentNode.children[i], this.conditionCheck, true);
-        if (result) {
-          return path.concat(result);
-        }
+      for (i = parentNode.children.indexOf(currNode) - 1; i >= 0; i--) {
+        searcher.root = parentNode.children[i];
+        result = searcher.search('reverse-preorder');
+        if (result) return path.concat(result);
       }
       // otherwise continue up path
     }
-    return false;
   },
 
   /**
@@ -420,44 +417,44 @@ TreeTraveler.prototype = {
    */
   nextInorder: function (path) {
     var result, currNode;
-    // move up the path till there are no nodes
     var prevNode = null;
+    var searcher = new Searcher(null, this.conditionCheck, true);
+
+    // move up the path till there are no nodes
     while (path.length > 0) {
       currNode = path[path.length - 1];
-      // left descendents of this node appear before this one. no need to check them.
+      // when there are children
       if (currNode.children?.length > 0) {
-        // currNode only has left descendents
+        // left descendents of the cached node appear before this one. therefore no need to check them.
+
+        // when the current node only has left descendents
         if (currNode.children.length === 1) {
           if (currNode !== this.node) {
             // see if it matches conditions
             result = this.conditionCheck(currNode);
-            if (result) {
-              return path;
-            }
-          }
-        } else if (currNode.children[1] !== prevNode) {
-          // otherwise currNode has more than one child.
-          // when the right child is not the previous node
-          // node is not the node we started at.
-          if (currNode !== this.node) {
-            // see if currNode matches conditions
-            result = this.conditionCheck(currNode);
-            if (result) {
-              return path;
-            }
-          }
-          // otherwise, check the right sub-tree
-          result = inorder(currNode.children[1], this.conditionCheck, true);
-          if (result) {
-            return path.concat(result);
+            if (result) return path;
           }
         }
+        // otherwise currNode has more than one child.
+        // when the right child is not the previous node
+        else if (currNode.children[1] !== prevNode) {
+          // when the current node is not the node we started at.
+          if (currNode !== this.node) {
+            result = this.conditionCheck(currNode);
+            if (result) return path;
+          }
+
+          // otherwise, check the right sub-tree
+          searcher.root = currNode.children[1];
+          result = searcher.search('inorder');
+          if (result) return path.concat(result);
+        }
       }
+
+      // otherwise continue up the path (ancestors)
       path.pop();
       prevNode = currNode;
-      // continue up the path
     }
-    return false;
   },
 
   /**
@@ -469,28 +466,28 @@ TreeTraveler.prototype = {
     var result, currNode;
     // move up the path till there are no nodes
     var prevNode = null;
+    var searcher = new Searcher(this.node, this.conditionCheck, true);
+
     while (path.length > 0) {
       currNode = path[path.length - 1];
+
+      // doesn't matter if this node has right children or not, they're before this node in the order.
+      // don't check the node if the right child is the previous node.
       if (currNode.children?.length > 0 && currNode.children[0] !== prevNode) {
-        // doesn't matter if this node has right children or not, they're before this node in the order.
         // check this node if its not the node we started at.
-        // don't check the node if the right child is the previous node.
         if (currNode !== this.node) {
           result = this.conditionCheck(currNode);
-          if (result) {
-            return path;
-          }
+          if (result) return path;
         }
-        result = reverseorder(currNode.children[0], this.conditionCheck, true);
-        if (result) {
-          return path.concat(result);
-        }
+        searcher.root = currNode.children[0];
+        result = searcher.search('reverseorder');
+        if (result) return path.concat(result);
       }
+
+      // continue up the path
       path.pop();
       prevNode = currNode;
-      // continue up the path
     }
-    return false;
   },
 
   /**
@@ -503,6 +500,8 @@ TreeTraveler.prototype = {
     // if we're at this node, all descendents appear before this node
     // check older siblings
     // check ancestor and then its older siblings
+
+    var searcher = new Searcher(this.node, this.conditionCheck, true);
 
     // while the path contains nodes
     while (path.length > 1) {
@@ -517,19 +516,17 @@ TreeTraveler.prototype = {
 
       // check older siblings of current node
       for (i; i < len; i++) {
-        result = postorder(parentNode.children[i], this.conditionCheck, true);
-        if (result) {
-          return path.concat(result);
-        }
+        searcher.root = parentNode.children[i];
+        result = searcher.search('postorder');
+        if (result) return path.concat(result);
       }
+
       // check parent
       result = this.conditionCheck(parentNode);
-      if (result === true) {
-        return path;
-      }
+      if (result === true) return path;
+
       // otherwise continue up path
     }
-    return false;
   },
 
   /**
@@ -539,6 +536,8 @@ TreeTraveler.prototype = {
    */
   nextReversePostorder: function (path) {
     var result, currNode, parentNode, i;
+    var searcher = new Searcher(this.node, this.conditionCheck, true);
+
     // while the path contains nodes
     while (path.length > 1) {
       currNode = path.pop();
@@ -546,20 +545,17 @@ TreeTraveler.prototype = {
       i = parentNode.children.indexOf(currNode) - 1;
       // check younger siblings of current node
       for (i; i >= 0; i--) {
-        result = reversePostorder(parentNode.children[i], this.conditionCheck, true);
-        if (result) {
-          return path.concat(result);
-        }
+        searcher.root = parentNode.children[i];
+        result = searcher.search('reverse-postorder');
+        if (result) return path.concat(result);
       }
       // check parent
       result = this.conditionCheck(parentNode);
-      if (result) {
-        return path;
-      }
+      if (result) return path;
+
       // otherwise continue up path
       currNode = parentNode;
     }
-    return false;
   },
 
   /**
@@ -567,7 +563,7 @@ TreeTraveler.prototype = {
    * @param {Array} path array of nodes containing the path from the root to the arbitrary node
    * @returns {Boolean|Object} results of search
    */
-  walk: function (path) {
+  walkForward: function (path) {
     switch (this.settings.order) {
       case 'preorder':
         return this.nextPreorder(path);
@@ -582,7 +578,7 @@ TreeTraveler.prototype = {
       case 'reverse-postorder':
         return this.nextReversePostorder(path);
       default:
-        return false;
+        return null;
     }
   },
 
@@ -591,7 +587,7 @@ TreeTraveler.prototype = {
    * @param {Array} path array of nodes containing the path from the root to the arbitrary node
    * @returns {Boolean|Object} results of search
    */
-  findPrev: function (path) {
+  walkBackward: function (path) {
     // here we're inverting the order for each one to be able to go backwards one step
     switch (this.settings.order) {
       case 'preorder':
@@ -607,11 +603,9 @@ TreeTraveler.prototype = {
       case 'reverse-postorder':
         return this.nextPreorder(path);
       default:
-        return false;
+        return null;
     }
   },
 };
-
-
 
 module.exports = TreeTraveler;

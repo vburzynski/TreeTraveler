@@ -2,27 +2,23 @@ const walkableMixin = require('./walkableMixin');
 
 class Search {
   /**
-   *
+   * constructs a Searcher
    * @param {TreeNode} root A TreeNode that is a root of a tree or sub-tree
    * @param {Function} callback callback function to execute for each node
-   * @param {Boolean} trackPath this.trackPath when true, returns the path from the node to the node that matches the search condition
+   * @param {Boolean} trackPath this.trackPath when true, returns the ancestry path from the root to the found node
    */
   constructor(root, callback, trackPath) {
     this.root = root;
     this.trackPath = trackPath;
 
     // wrap the callback with some custom logic for searching
-    // when trackPath is false, we want to return just the node
-    // when trackPath is true, we want to return the path from the root to the node
     this.callback = (node) => {
       var found = callback(node);
-      // NOTE: when callback returns a truthy value, assume we're performing a search
-      if (found) {
-        return this.trackPath ? [node] : node;
-      }
+      // when callback returns a truthy value, assume we're performing a search
+      // when trackPath is false, we want to return just the node
+      // when trackPath is true, we want to track the ancestry path from the root to the node
+      if (found) return this.trackPath ? [node] : node;
     };
-
-    // TODO: we need another callback for the recursive walking...
   }
 
   /**
@@ -33,7 +29,8 @@ class Search {
    */
   _onChildIteration(node, result) {
     /*
-    IDEA: rather than building the ancestry path after finding the match, we could keep a stack or structure
+    FUTURE: Alternate Idea for tracking Ancestry Path
+    rather than building the ancestry path after finding the match, we could keep a stack or structure
     of some kind to track this as we walk the node. just popping and pushing nodes as we traverse.
     This would probably be more useful for a filter operation rather than a single item search.
     */
@@ -79,8 +76,6 @@ class Search {
         return this.reverseLevelorder(this.root);
       case 'inverse-levelorder':
         return this.inverseLevelorder(this.root);
-      // case 'inverse-reverse-levelorder':
-      // case 'reverse-inverse-levelorder':
       default:
         throw new Error(`${order} is not implemented`);
     }
