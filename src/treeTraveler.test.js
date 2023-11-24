@@ -1,18 +1,7 @@
 var chai = require('chai');
-var TreeTraveler = require('../src/treeTraveler');
-var TreeNode = require('../src/treeNode');
-var {
-  preorder,
-  reversePreorder,
-  inorder,
-  reverseorder,
-  postorder,
-  reversePostorder,
-  levelorder,
-  reverseLevelorder,
-  inverseLevelorder,
-} = require('../src/treeTraversal');
-const { Search } = require('../src/walkableMixin');
+var TreeNode = require('./treeNode');
+var TreeTraveler = require('./treeTraveler');
+const Searcher = require('./Searcher');
 
 // grab the expect object
 var expect = chai.expect;
@@ -28,7 +17,7 @@ describe('TreeTraveler', function () {
   var queue = [];
 
   var treeFixtureA = [1, [2, [4, [7], 5], 3, [6, [8, 9]]]];
-  var treeFixtureB = ['A', ['B', ['D', 'E'], 'C', ['F', 'G']]];
+  var _treeFixtureB = ['A', ['B', ['D', 'E'], 'C', ['F', 'G']]];
 
   function setupTree() {
     queue = [];
@@ -107,7 +96,7 @@ describe('TreeTraveler', function () {
 
     beforeEach(function () {
       nodes = [];
-      searcher = new Search(tree.root, (node) => {
+      searcher = new Searcher(tree.root, (node) => {
         nodes.push(node.object);
       });
     });

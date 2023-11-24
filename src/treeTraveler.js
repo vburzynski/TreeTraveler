@@ -1,24 +1,3 @@
-// DONE: the traveral functions were not actually dependent on the TreeTraveler object, they just need a node. Extracted.
-// TODO: original code was mixing up concepts -- tree, and iterators -- refactor
-// so we could have Tree and TreeTraveler/TreeIterator
-
-// TODO: add parent node to TreeNode, this would get rid of the path
-// TODO: get rid of path
-// counter point -- for some tree algorithms you always start from the root
-
-// TODO: break up the skip() function -- it's confusing, also too long of a method. break into multiple
-// you can specify prev(3) or next(3) instead?
-
-// TODO: should build() be chainable (and return this), or return a Set of all the nodes? (or array etc.)
-// TODO: if I changed the destroy() test, I wouldn't need the build() callback.
-// TODO: is it worth having the callback to call something like onBuild()/onAttach() in the nodes? or would it be better to do that separately?
-// TODO: consider getting rid of settings object. there's not enough to justify it? collapse it down. -- NOT SURE about this one
-// TODO: the find functions... can get rid of more of the arguments being passed around
-// TODO: test sendToNode()
-// TODO: test sendToPosition()
-// TODO: test search()
-// TODO: convert into a class? or keep prototypal?
-
 var TreeNode = require('./treeNode');
 var {
   preorder,
@@ -28,7 +7,7 @@ var {
   postorder,
   reversePostorder,
 } = require('./treeTraversal');
-var { Search } = require('./walkableMixin');
+var Searcher = require('./Searcher');
 
 var defaults = {
   shouldLoop: false,
@@ -39,6 +18,20 @@ function is(type, obj) {
   return obj !== undefined && obj !== null && type === Object.prototype.toString.call(obj).slice(8, -1);
 }
 
+// TODO: original code was mixing up concepts -- tree, and iterators -- refactor
+//       so we could have Tree and TreeTraveler/TreeIterator
+// TODO: add parent node to TreeNode??? this would get rid of the path
+// TODO: get rid of path (maybe not?)
+//       counter point -- for some tree algorithms you always start from the root
+// TODO: break up the skip() function -- it's confusing, also too long of a method. break into multiple
+//       you can specify prev(3) or next(3) instead?
+// TODO: if I changed the destroy() test, I wouldn't need the build() callback.
+// TODO: is it worth having the callback to call something like onBuild()/onAttach() in the nodes? or would it be better to do that separately?
+// TODO: consider getting rid of settings object. there's not enough to justify it? collapse it down. -- NOT SURE about this one
+// TODO: test sendToNode()
+// TODO: test sendToPosition()
+// TODO: test search()
+// TODO: convert into a class? or keep prototypal?
 
 /**
  * Indicates whether a order value is valid or not
@@ -134,8 +127,8 @@ TreeTraveler.prototype = {
    */
   reset: function () {
     // grab path to the first node in the current sequence
-    var search = new Search(this.root, this.conditionCheck, true);
-    this.path = search.search(this.settings.order);
+    var searcher = new Searcher(this.root, this.conditionCheck, true);
+    this.path = searcher.search(this.settings.order);
     this.node = this.path[this.path.length - 1];
   },
 

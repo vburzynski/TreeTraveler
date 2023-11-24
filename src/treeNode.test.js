@@ -1,6 +1,5 @@
 var chai = require('chai');
-var TreeNode = require('../src/treeNode');
-const { beforeEach } = require('mocha');
+var TreeNode = require('./treeNode');
 
 // grab the expect object
 var expect = chai.expect;
