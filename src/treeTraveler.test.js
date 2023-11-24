@@ -117,17 +117,76 @@ describe('TreeTraveler', function () {
   });
 
   describe('reset()', function () {
-    // TODO: implement tests for reset
-    describe('should move the traveller back to the first node in the order sequence', function () {
-      it('preorder            - should return the tree\'s node paramter to treeNode with value of 1');
-      it('reverse-preorder    - should return the tree\'s node paramter to treeNode with value of 1');
-      it('postorder           - should return the tree\'s node paramter to treeNode with value of 7');
-      it('reverse-postorder   - should return the tree\'s node paramter to treeNode with value of 9');
-      it('inorder             - should return the tree\'s node paramter to treeNode with value of 7');
-      it('reverseorder        - should return the tree\'s node paramter to treeNode with value of 3');
-      it('levelorder          - should return the tree\'s node paramter to treeNode with value of 1');
-      it('reverse-levelorder  - should return the tree\'s node paramter to treeNode with value of 1');
-      it('inverse-levelorder  - should return the tree\'s node paramter to treeNode with value of 9');
+    describe('when the traveler order is set to preorder', function () {
+      it('should set the node property to the TreeNode with the object value of 1', function() {
+        tree.setOrder('preorder');
+        tree.step();
+        tree.reset();
+        expect(tree.node.object).to.equal(1);
+      });
+    });
+
+    describe('when the traveler order is set to reverse-preorder', function () {
+      it('should set the node property to the TreeNode with the object value of 1', function() {
+        tree.setOrder('reverse-preorder');
+        tree.step();
+        tree.reset();
+        expect(tree.node.object).to.equal(1);
+      });
+    });
+
+    describe('when the traveler order is set to postorder', function () {
+      it('should set the node property to the TreeNode with the object value of 7', function() {
+        tree.setOrder('postorder');
+        tree.step();
+        tree.reset();
+        expect(tree.node.object).to.equal(7);
+      });
+    });
+
+    describe('when the traveler order is set to reverse-postorder', function () {
+      it('should set the node property to the TreeNode with the object value of 9', function() {
+        tree.setOrder('reverse-postorder');
+        tree.step();
+        tree.reset();
+        expect(tree.node.object).to.equal(9);
+      });
+    });
+
+    describe('when the traveler order is set to inorder', function () {
+      it('should set the node property to the TreeNode with the object value of 7', function() {
+        tree.setOrder('inorder');
+        tree.step();
+        tree.reset();
+        expect(tree.node.object).to.equal(7);
+      });
+    });
+
+    describe('when the traveler order is set to reverseorder', function () {
+      it('should set the node property to the TreeNode with the object value of 3', function() {
+        tree.setOrder('reverseorder');
+        tree.step();
+        tree.reset();
+        expect(tree.node.object).to.equal(3);
+      });
+    });
+
+    describe('when the traveler order is set to levelorder', function () {
+      it('should set the node property to the TreeNode with the object value of 1', function() {
+        tree.setOrder('levelorder');
+        tree.step();
+        tree.reset();
+        expect(tree.node.object).to.equal(1);
+      });
+    });
+
+    describe('when the traveler order is set to reverse-levelorder', function () {
+      it('should set the node property to the TreeNode with the object value of 1', function() {
+        tree.setOrder('reverse-levelorder');
+        tree.step();
+        tree.reset();
+        expect(tree.node.object).to.equal(1);
+      });
     });
   });
 
