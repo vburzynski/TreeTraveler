@@ -19,12 +19,12 @@ function preorder(node, callback, trackPath) {
 
   // visit children from left to right
   for (var i = 0; i < node.children.length; i++) {
-    found = preorder(node.children[i], callback, trackPath);
-    if (found) {
-      if (Array.isArray(found)) {
-        found.unshift(node);
+    var result = preorder(node.children[i], callback, trackPath);
+    if (result) {
+      if (Array.isArray(result)) {
+        result.unshift(node);
       }
-      return found;
+      return result;
     }
   }
 
@@ -67,7 +67,7 @@ function reversePreorder(node, callback, trackPath) {
  */
 function inorder(node, callback, trackPath) {
   var result;
-  var found;
+
   if (node.children.length > 2) {
     throw new Error('Inorder Traversal only works on binary trees');
   }
@@ -86,7 +86,7 @@ function inorder(node, callback, trackPath) {
   }
 
   // check node
-  found = callback(node);
+  var found = callback(node);
   if (found === true) {
     return trackPath ? [node] : node;
   }
@@ -116,7 +116,6 @@ function inorder(node, callback, trackPath) {
  */
 function reverseorder(node, callback, trackPath) {
   var result;
-  var found;
 
   if (node.children.length > 2) {
     throw new Error('Reverse Inorder Traversal only works on binary trees');
@@ -135,7 +134,7 @@ function reverseorder(node, callback, trackPath) {
   }
 
   // check the node
-  found = callback(node);
+  var found = callback(node);
   if (found === true) {
     return trackPath ? [node] : node;
   }
