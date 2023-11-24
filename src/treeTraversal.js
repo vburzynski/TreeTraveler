@@ -2,6 +2,45 @@
 // TODO: the logic around the node callbak, and the logic in the child loops might be extractable. (pass in callbacks to do the work, might make this more reusable)
 
 /**
+ * traverse the tree (or sub-tree) in a specific order.
+ * Stops traversal whenever the callback returns true.
+ * @param {Boolean} trackPath when true, the search will return the path from the root to matching node
+ * @returns {Array|Object} result of the traversal
+ */
+function search(order, root, callback, trackPath) {
+  // proceed based off the specified order
+  switch (order) {
+    case 'preorder':
+      return preorder(root, callback, trackPath);
+    case 'reverse-preorder':
+    case 'inverse-postorder':
+      return reversePreorder(root, callback, trackPath);
+    case 'inorder':
+      return inorder(root, callback, trackPath);
+    case 'reverseorder':
+    case 'inverseorder':
+    case 'reverse-inorder':
+    case 'inverse-inorder':
+      return reverseorder(root, callback, trackPath);
+    case 'postorder':
+      return postorder(root, callback, trackPath);
+    case 'reverse-postorder':
+    case 'inverse-preorder':
+      return reversePostorder(root, callback, trackPath);
+    case 'levelorder':
+      return levelorder(root, callback, trackPath);
+    case 'reverse-levelorder':
+      return reverseLevelorder(root, callback, trackPath);
+    case 'inverse-levelorder':
+      return inverseLevelorder(root, callback, trackPath);
+    case 'inverse-reverse-levelorder':
+    case 'reverse-inverse-levelorder':
+    default:
+      throw new Error(`${order} is not implemented`);
+  }
+};
+
+/**
  * Traverse tree in preorder ( node, children left to right )
  * @param {TreeNode} node root of the tree or sub-tree
  * @param {Function} callback callback function to execute for each node
@@ -338,6 +377,7 @@ function inverseLevelorder(node, callback, trackPath) {
 };
 
 module.exports = {
+  search,
   preorder,
   reversePreorder,
   inorder,

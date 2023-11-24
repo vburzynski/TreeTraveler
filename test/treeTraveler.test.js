@@ -391,16 +391,16 @@ describe('TreeTraveler', function () {
 
     it('should accept a utilize condition function', function () {
       tree.setConditionCheck(function (node) {
-        return (node.object % 2 === 0);
+        return (node.object % 2) === 0;
       });
-      tree.setOrder('inorder');
-      expect(tree.node.object).to.equal(4);
-      tree.step();
+      tree.setOrder('preorder');
       expect(tree.node.object).to.equal(2);
       tree.step();
-      expect(tree.node.object).to.equal(8);
+      expect(tree.node.object).to.equal(4);
       tree.step();
       expect(tree.node.object).to.equal(6);
+      tree.step();
+      expect(tree.node.object).to.equal(8);
     });
 
     it('should should stop at the end of the order', function () {
