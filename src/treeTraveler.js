@@ -28,7 +28,6 @@ var {
   reverseorder,
   postorder,
   reversePostorder,
-  levelorder,
 } = require('./treeTraversal');
 
 var defaults = {
@@ -52,9 +51,7 @@ function validOrder(order) {
     order === 'inorder' ||
     order === 'reverseorder' ||
     order === 'postorder' ||
-    order === 'reverse-postorder' ||
-    order === 'levelorder' ||
-    order === 'inverse-levelorder'
+    order === 'reverse-postorder'
   );
 }
 
@@ -112,7 +109,7 @@ TreeTraveler.prototype = {
   node: null,
 
   /**
-   * The traversal order path from the root node to the current node
+   * the ancestry path from the root to the current node
    * @type {TreeNode[]}
    */
   path: null,
@@ -142,13 +139,13 @@ TreeTraveler.prototype = {
 
   /**
    * Destroys the tree structure and it's nodes
-   * @param {Boolean} shouldDestroyNodes Defaults to true, when true, tree nodes with be destroyed along with the tree.
+   * @param {Boolean} shouldDestroyNodes when true, tree nodes with be destroyed along with the tree.
    */
   destroy: function (shouldDestroyNodes) {
-    shouldDestroyNodes = typeof shouldDestroyNodes === 'undefined' ? true : shouldDestroyNodes;
     if (shouldDestroyNodes) {
       postorder(this.root, node => node.destroy());
     }
+
     this.root = null;
     this.node = null;
     this.path = null;
@@ -199,7 +196,6 @@ TreeTraveler.prototype = {
     }
   },
 
-  // FIXME: I think this is treating path as if it were ancestors of the current node
   /**
    * Travel up to an immediate ancestor of the current node. When at the
    * root of a tree, stay put.
@@ -207,7 +203,6 @@ TreeTraveler.prototype = {
    */
   up: function (num) {
     num = is('Number', num) ? num : 1;
-    // FIXME: this is NOT an ancestry path
     this.node = this.path.pop();
     // while the path contains more than just the root node and num is > 0
     while (this.path.length > 1 && num > 0) {
@@ -218,7 +213,6 @@ TreeTraveler.prototype = {
     this.path.push(this.node);
   },
 
-  // FIXME: I think this is treating path as if it were ancestors of the current node
   /**
    * Drill down to a descendent of the current node
    */
@@ -233,7 +227,6 @@ TreeTraveler.prototype = {
         index = position[i];
         if (index >= 0 && index < parentNode.children.length) {
           this.node = parentNode.children[index];
-          // FIXME: this is NOT an ancestry path
           this.path.push(this.node);
         } else {
           console.log('Warning: position array contains an out of bounds index.');
@@ -258,7 +251,6 @@ TreeTraveler.prototype = {
 
     // if depth was provided, move up the path to a direct ancestor
     if (depth !== 0) {
-      // FIXME: up isn't working properly yet
       this.up(Math.abs(depth));
     }
 
@@ -369,7 +361,6 @@ TreeTraveler.prototype = {
   sendToPosition: function (position) {
     if (Array.isArray(position)) {
       this.reset();
-      // FIXME: down() doesn't work right
       this.down(position);
     }
   },
@@ -599,38 +590,6 @@ TreeTraveler.prototype.nextReversePostorder = function (path) {
     }
     // otherwise continue up path
     currNode = parentNode;
-  }
-  return false;
-};
-
-/**
- * Find the next node in levelorder sequence given an arbitrary node and the path to that node.
- * @param {Array} path array of nodes containing the path from the root to the arbitrary node
- * @returns {Boolean|Object} results of search
- */
-TreeTraveler.prototype.nextLevelorder = function (path) {
-  var result, i, len;
-  // check level to the right
-  // continue to next level down
-  var arr = [];
-  levelorder(
-    this.root,
-    node => {
-      arr.push(node);
-    },
-    false,
-  );
-
-  var findFn = node => node === arr[i];
-
-  i = arr.indexOf(this.node) + 1;
-  len = arr.length;
-  for (i; i < len; i++) {
-    result = this.conditionCheck(arr[i]);
-    if (result) {
-      // return the path to that node
-      return preorder(this.root, findFn, true);
-    }
   }
   return false;
 };

@@ -629,7 +629,7 @@ describe('TreeTraveler', function () {
   describe('destroy()', function () {
     it('must destroy every node in the tree', function () {
       var i;
-      tree.destroy();
+      tree.destroy(true);
       console.log('destroyed');
       expect(tree.root).to.be.null;
       for (i = 0; i < queue.length; i++) {
