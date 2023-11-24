@@ -617,7 +617,7 @@ describe('TreeTraveler', function () {
     it('should move to a descendent of the current node');
   });
 
-  describe('sendTo()', function () {
+  describe('sendToNode()', function () {
     it('should move to a descendent of the root node');
   });
 

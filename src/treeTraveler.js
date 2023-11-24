@@ -14,7 +14,7 @@
 // TODO: is it worth having the callback to call something like onBuild()/onAttach() in the nodes? or would it be better to do that separately?
 // TODO: consider getting rid of settings object. there's not enough to justify it? collapse it down. -- NOT SURE about this one
 // TODO: the find functions... can get rid of more of the arguments being passed around
-// TODO: test sendTo()
+// TODO: test sendToNode()
 // TODO: test sendToPosition()
 // TODO: test search()
 // TODO: convert into a class? or keep prototypal?
@@ -270,7 +270,7 @@ TreeTraveler.prototype = {
       // example:
       // Skip ahead 3 nodes:
       // traveller.skip('next',3);
-      case 'next':
+      case 'step':
         if (num > 0) {
           fn = function () {
             num--;
@@ -280,7 +280,7 @@ TreeTraveler.prototype = {
         }
         break;
       // skip back to a previous node in the sequence
-      case 'prev':
+      case 'back':
         if (is('Number', num) && num > 0) {
           fn = function () {
             num--;
@@ -350,9 +350,9 @@ TreeTraveler.prototype = {
 
   // FIXME: not tested
   /**
-   * Send to a specific node.
+   * Send traveler/visitor to a specific node.
    */
-  sendTo: function (target) {
+  sendToNode: function (target) {
     var findFn = function (node) {
       return node === target;
     };
@@ -365,7 +365,7 @@ TreeTraveler.prototype = {
 
   // FIXME: not working
   /**
-   * Send the directly to a node relative to the root node of the tree.
+   * Send the traveler/visitor directly to a node relative to the root node of the tree.
    * @param {Array} position - array of indexes leading to targeted node.
    */
   sendToPosition: function (position) {
