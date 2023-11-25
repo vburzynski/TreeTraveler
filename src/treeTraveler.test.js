@@ -78,9 +78,9 @@ describe('TreeTraveler', function () {
   var treeFixtureA = [1, [2, [4, [7], 5], 3, [6, [8, 9]]]];
   var _treeFixtureB = ['A', ['B', ['D', 'E'], 'C', ['F', 'G']]];
 
-  function setupTree(callback, options = {}) {
-    traveler = new TreeTraveler(options);
-    traveler.build(treeFixtureA, callback);
+  function setupTree(options = {}) {
+    var root = TreeNode.buildTreeFromArray(treeFixtureA);
+    traveler = new TreeTraveler(root, options);
   }
 
   afterEach(function () {
@@ -89,7 +89,7 @@ describe('TreeTraveler', function () {
 
   describe('constructor', function () {
     beforeEach(function () {
-      setupTree(() => {});
+      setupTree();
     });
 
     it('begins with a traversal order of preorder', function () {
@@ -108,7 +108,7 @@ describe('TreeTraveler', function () {
 
   describe('.build()', function () {
     beforeEach(function () {
-      setupTree(() => {});
+      setupTree();
     });
 
     it('must return the root of the new tree structure', function () {
@@ -119,7 +119,7 @@ describe('TreeTraveler', function () {
 
   describe('.setOrder()', function () {
     beforeEach(function () {
-      setupTree(() => {});
+      setupTree();
     });
 
     it('changes the traversal order', function () {
@@ -130,7 +130,7 @@ describe('TreeTraveler', function () {
 
   describe('.reset()', function () {
     beforeEach(function () {
-      setupTree(() => {});
+      setupTree();
     });
 
     describe('when the traveler order is set to preorder', function () {
@@ -210,9 +210,10 @@ describe('TreeTraveler', function () {
     it('must destroy every node in the tree', function () {
       // Arrange
       const queue = [];
-      setupTree((node) => {
+      setupTree();
+      traveler.conditionCheck = (node) => {
         queue.push(node);
-      });
+      };
 
       // Act
       var i;
@@ -230,7 +231,7 @@ describe('TreeTraveler', function () {
 
   describe('conditionCheck getter/setter', function () {
     beforeEach(function () {
-      setupTree(() => {});
+      setupTree();
     });
 
     it('accepts a function', function () {
@@ -253,7 +254,7 @@ describe('TreeTraveler', function () {
   describe('next()', function () {
     describe('when order is preorder', function () {
       beforeEach(function () {
-        setupTree(() => {}, { order: 'preorder' });
+        setupTree({ order: 'preorder' });
       });
 
       it('travels to the next node', function () {
@@ -327,7 +328,7 @@ describe('TreeTraveler', function () {
 
     describe('when the order is inorder', function () {
       beforeEach(function () {
-        setupTree(() => {}, { order: 'inorder' });
+        setupTree({ order: 'inorder' });
       });
 
       it('travels to the next node', function () {
@@ -400,7 +401,7 @@ describe('TreeTraveler', function () {
 
     describe('when the order is postorder', function () {
       beforeEach(function () {
-        setupTree(() => {}, { order: 'postorder' });
+        setupTree({ order: 'postorder' });
       });
 
       it('travels to the next node', function () {
@@ -428,7 +429,7 @@ describe('TreeTraveler', function () {
 
     describe('when the order is reverse-preorder', function () {
       beforeEach(function () {
-        setupTree(() => {}, { order: 'reverse-preorder' });
+        setupTree({ order: 'reverse-preorder' });
       });
 
       it('travels to the next node', function () {
@@ -455,7 +456,7 @@ describe('TreeTraveler', function () {
 
     describe('when the order is reverse-postorder', function () {
       beforeEach(function () {
-        setupTree(() => {}, { order: 'reverse-postorder' });
+        setupTree({ order: 'reverse-postorder' });
       });
 
       it('travels to the next node', function () {
@@ -482,7 +483,7 @@ describe('TreeTraveler', function () {
 
     describe('when the order is reverseorder', function () {
       beforeEach(function () {
-        setupTree(() => {}, { order: 'reverseorder' });
+        setupTree({ order: 'reverseorder' });
       });
 
       it('travels to the next node', function () {
@@ -511,7 +512,7 @@ describe('TreeTraveler', function () {
   // TODO: break these up into propert arrange-act-assert patterned tests
   describe('prev()', function () {
     beforeEach(function () {
-      setupTree(() => {});
+      setupTree();
     });
 
     it('travels to the previous node when order is "preorder"', function () {
@@ -663,7 +664,7 @@ describe('TreeTraveler', function () {
 
   describe('skip()', function () {
     beforeEach(function () {
-      setupTree(() => {});
+      setupTree();
     });
 
     it('skips to an older sibling');
@@ -674,7 +675,7 @@ describe('TreeTraveler', function () {
 
   describe('up()', function () {
     beforeEach(function () {
-      setupTree(() => {});
+      setupTree();
     });
 
     it('moves up the specified number of nodes along the path');
@@ -683,7 +684,7 @@ describe('TreeTraveler', function () {
 
   describe('down()', function () {
     beforeEach(function () {
-      setupTree(() => {});
+      setupTree();
     });
 
     it('moves to a descendent of the current node');
@@ -691,7 +692,7 @@ describe('TreeTraveler', function () {
 
   describe('sendToNode()', function () {
     beforeEach(function () {
-      setupTree(() => {});
+      setupTree();
     });
 
     it('moves to a descendent of the root node');
@@ -699,7 +700,7 @@ describe('TreeTraveler', function () {
 
   describe('sendToPosition()', function () {
     beforeEach(function () {
-      setupTree(() => {});
+      setupTree();
     });
 
     it('moves to a specific position in the order traversal');

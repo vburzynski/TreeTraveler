@@ -131,14 +131,13 @@ TreeNode.prototype = {
 /**
  * Build a tree structure from a multi-dimensional array
  * @param {Array} arr multi-dimensional array containing values
- * @param {Object} parentNode parent node
- * @param {Function} callback callback function
+ * @param {Object} [parentNode] when provided, the tree is appended to this node's children
+ * @param {Function} [callback] when provided, this is called with every new node
  * @returns {TreeNode} root TreeNode of the full tree structure
- *
  * @example:
  *   TreeNode.buildTreeFromArray([1,[2,[4,[7],5],3,[6,[8,9]]]]);
  */
-TreeNode.buildTreeFromArray = function(arr, parentNode, callback) {
+TreeNode.buildTreeFromArray = function(arr, parentNode, callback = () => {}) {
   var node;
   for (var i = 0; i < arr.length; i++) {
     if (Array.isArray(arr[i])) {

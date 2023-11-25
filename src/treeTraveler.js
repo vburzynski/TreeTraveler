@@ -44,9 +44,11 @@ function validOrder(order) {
 /**
  * @constructor
  */
-var TreeTraveler = function (options) {
+var TreeTraveler = function (root, options) {
+  this.root = root;
   this.settings = { ...defaults, ...options };
   this._conditionCheckFn = (_node) => true;
+  this.reset();
 };
 
 TreeTraveler.prototype = {
@@ -78,10 +80,10 @@ TreeTraveler.prototype = {
    * Builds a tree from an array
    * @param {Array} arr multi-dimensional array of values
    */
-  build: function (arr, callback = () => {}) {
-    this.root = TreeNode.buildTreeFromArray(arr, null, callback);
-    this.reset();
-  },
+  // build: function (arr, callback = () => {}) {
+  //   this.root = TreeNode.buildTreeFromArray(arr, null, callback);
+  //   this.reset();
+  // },
 
   /**
    * Sets the order in which the TreeTraveler will travel the tree
@@ -119,7 +121,8 @@ TreeTraveler.prototype = {
   },
 
   /**
-   * Sets the condition check function
+   * Sets the condition check function.
+   * This function is used to test whether a visit a node when walking the tree
    * @param {Function} fn - function which accepts a treeNode object and returns true or false
    */
   set conditionCheck(fn) {
@@ -128,6 +131,9 @@ TreeTraveler.prototype = {
     }
   },
 
+  /**
+   * Gets the current condition check function
+   */
   get conditionCheck() {
     return this._conditionCheckFn;
   },
@@ -178,6 +184,7 @@ TreeTraveler.prototype = {
 
   /**
    * Drill down to a descendent of the current node
+   * @param {number[]} position array of child node indexes to move to
    */
   down: function (position) {
     if (Array.isArray(position)) {
@@ -199,7 +206,7 @@ TreeTraveler.prototype = {
     }
   },
 
-  // FIXME: untested
+  // FIXME: refactor and test
   /**
    * Skip to a sibling or ancestor of the current node. Use the down() method to drill down into the descendents of a node.
    * @param {String} direction directionality of the skip
@@ -216,6 +223,10 @@ TreeTraveler.prototype = {
     if (depth !== 0) {
       this.up(Math.abs(depth));
     }
+
+    // TODO: extract sibling() which accepst ± index (..., -1, 0, +1, ...)
+    // TODO: extract start() -- should it accept start(n) to move relative to start?
+    // TODO: extract end() -- should it accept start(n) to move relative to end?
 
     // determine the directionality of our movement
     switch (direction) {
@@ -278,7 +289,7 @@ TreeTraveler.prototype = {
     }
   },
 
-  // FIXME: not tested
+  // FIXME: test this
   /**
    * Send traveler/visitor to a specific node.
    */
@@ -291,7 +302,7 @@ TreeTraveler.prototype = {
     }
   },
 
-  // FIXME: not working
+  // FIXME: test this
   /**
    * Send the traveler/visitor directly to a node relative to the root node of the tree.
    * @param {Array} position - array of indexes leading to targeted node.
@@ -303,6 +314,8 @@ TreeTraveler.prototype = {
     }
   },
 
+  // FUTURE: sendToMatch()? to send to the first node for which a callback returns true?
+
   /*
   FUTURE: Idea for not storing the path... ¯\_(ツ)_/¯
   if we didn't store the path, we could use the walkable mixin functions.
@@ -310,6 +323,9 @@ TreeTraveler.prototype = {
   Then you would find the next node in the sequence order.
   this would be more computationally expensive, but the logic would be simpler.
   */
+
+  // FUTURE: maybe all of the nextXXX() functions could be a mixin?
+  // FUTURE: maybe mix in the walkable functions instead of using the searcher?
 
   /**
    * Find the next node in preorder sequence given an arbitrary node and the path to that node.
