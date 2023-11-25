@@ -28,8 +28,7 @@ class Search {
    * @returns
    */
   _onChildIteration(node, result) {
-    /*
-    FUTURE: Alternate Idea for tracking Ancestry Path
+    /* FUTURE: Alternate Idea for tracking Ancestry Path
     rather than building the ancestry path after finding the match, we could keep a stack or structure
     of some kind to track this as we walk the node. just popping and pushing nodes as we traverse.
     This would probably be more useful for a filter operation rather than a single item search.

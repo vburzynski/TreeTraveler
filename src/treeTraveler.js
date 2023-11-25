@@ -9,13 +9,6 @@ function is(type, obj) {
   return obj !== undefined && obj !== null && type === Object.prototype.toString.call(obj).slice(8, -1);
 }
 
-// TODO: break up the skip() function -- it's confusing, also too long of a method. break into multiple
-//       you can specify prev(3) or next(3) instead?
-// TODO: is it worth having the callback to call something like onBuild()/onAttach() in the nodes? or would it be better to do that separately?
-// TODO: test sendToNode()
-// TODO: test sendToPosition()
-// TODO: test search()
-
 /**
  * Indicates whether a order value is valid or not
  * @param {String} order the order string
@@ -248,7 +241,6 @@ TreeTraveler.prototype = {
     return this.node;
   },
 
-  // FIXME: test this
   /**
    * Send traveler/visitor to a specific node.
    */
@@ -261,7 +253,6 @@ TreeTraveler.prototype = {
     }
   },
 
-  // FIXME: test this
   /**
    * Send the traveler/visitor directly to a node relative to the root node of the tree.
    * @param {Array} indexes - array of indexes leading to targeted node.
@@ -276,8 +267,7 @@ TreeTraveler.prototype = {
 
   // FUTURE: sendToMatch()? to send to the first node for which a callback returns true?
 
-  /*
-  FUTURE: Idea for not storing the path... ¯\_(ツ)_/¯
+  /* FUTURE: Idea for not storing the path... ¯\_(ツ)_/¯
   if we didn't store the path, we could use the walkable mixin functions.
   You would use the callback and "skip" over all the nodes till you found the current node.
   Then you would find the next node in the sequence order.
@@ -306,8 +296,7 @@ TreeTraveler.prototype = {
       }
     }
 
-    /*
-    FUTURE: what if the searcher accepted a path to the node?
+    /* FUTURE: what if the searcher accepted a path to the node?
     then for each level in recursion (or the tree), we skip straight to the appropriate node, and continue
     */
 

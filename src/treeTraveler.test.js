@@ -7,12 +7,10 @@ var expect = chai.expect;
 
 // TODO: Should the traveler start on the first node or off of it? if it starts off you would have to do .next() to see the first node.
 // NOTE: right now the traveler starts ON the first node.
-
-// TODO: helper to reset to end of order();
-// TODO: write tests for .search()
+// TODO: helper to reset to end of sequence;
 // TODO: test callback behavior separately
 // TODO: test with more tree structures
-// TODO: test with object values in the tree, or multiple properties on the TreeNode?
+// TODO: might be good to ensure the path property is correct in more test scenarios
 
 /*
 |           1
@@ -67,10 +65,6 @@ reverse-levelorder            each level top to bottom, nodes right to left    1
 inverse-levelorder            each level bottom to top, nodes right to left    9 8 7 6 5 4 3 2 1
 inverse-reverse-levelorder    each level bottom to top, nodes left to right    7 8 9 4 5 6 2 3 1
 ------------------------------------------------------------------------------------------------
-FIXME: this is wrong
-inverse-postorder                                                     9 8 6 3 5 7 4 2 1
-FIXME: this is wrong
-inverse-preorder                                                      9 8 6 3 5 7 4 2 1
 */
 
 describe('TreeTraveler', function () {
