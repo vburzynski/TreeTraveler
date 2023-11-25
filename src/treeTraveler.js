@@ -154,11 +154,11 @@ TreeTraveler.prototype = {
    */
   up: function (num) {
     num = is('Number', num) ? num : 1;
-    this.node = this.path.pop();
     // while the path contains more than just the root node and num is > 0
     while (this.path.length > 1 && num > 0) {
       // remove the next node from the path
-      this.node = this.path.pop();
+      this.path.pop();
+      this.node = this.path[this.path.length - 1];
       num--;
     }
     this.path.push(this.node);
@@ -166,28 +166,33 @@ TreeTraveler.prototype = {
 
   /**
    * Drill down to a descendent of the current node
-   * @param {number[]} position array of child node indexes to move to
+   * @param {number[]} indexes array of child node indexes to move to
    */
-  down: function (position) {
-    if (Array.isArray(position)) {
+  down: function (indexes) {
+    if (Array.isArray(indexes)) {
       var i,
         index,
         parentNode = this.node;
+
       // go through every position index
-      for (i = 0; i < position.length; i++) {
+      for (i = 0; i < indexes.length; i++) {
         parentNode = this.node;
-        index = position[i];
+        index = indexes[i];
         if (index >= 0 && index < parentNode.children.length) {
           this.node = parentNode.children[index];
           this.path.push(this.node);
         } else {
-          console.log('Warning: position array contains an out of bounds index.');
-          break;
+          throw new Error('Error: position array contains an out of bounds index.');
         }
       }
     }
   },
 
+  /**
+   * travel to an older or younger sibling within the same parent
+   * @param {number} delta accepst ± index (..., -1, 0, +1, ...)
+   * @returns {TreeNode}
+   */
   sibling(delta) {
     // when we're on the root node, there are no siblings
     if (this.path.length < 2) return;
@@ -208,58 +213,39 @@ TreeTraveler.prototype = {
     return this.node;
   },
 
-  // FIXME: refactor and test
   /**
-   * Skip to a sibling or ancestor of the current node. Use the down() method to drill down into the descendents of a node.
-   * @param {String} direction directionality of the skip
-   * @param {Number|Array} num Number of nodes to move in the given direction (per level)
-   * @param {Number} depth how far to move up the path to the root (optional)
+   * Go to the first sibling in the current set of siblings, or a node that is "n" steps from the start;
+   * @param {number} num
    */
-  skip: function (direction, num, depth) {
-    direction = direction || 'path';
-    num = is('Number', num) ? num : 1;
-    depth = is('Number', depth) ? Math.abs(depth) : 0;
-    var parentNode, fn, currNode, len;
+  start: function (num = 0) {
+    this.path.pop();
+    var parent = this.path[this.path.length - 1];
+    var target = 0 + num;
 
-    // if depth was provided, move up the path to a direct ancestor
-    if (depth !== 0) {
-      this.up(Math.abs(depth));
-    }
+    if (target < 0) target = 0;
+    if (target >= parent.children.length) target = parent.children.length - 1;
 
-    // TODO: extract sibling() which accepst ± index (..., -1, 0, +1, ...)
-    // TODO: extract start() -- should it accept start(n) to move relative to start?
-    // TODO: extract end() -- should it accept start(n) to move relative to end?
+    this.node = parent.children[target];
+    this.path.push(this.node);
+    return this.node;
+  },
 
-    // determine the directionality of our movement
-    switch (direction) {
-      // skip to a node relative to the start/front of the array
-      case 'start':
-      case 'front':
-        this.path.pop();
-        parentNode = this.path[this.path.length - 1];
-        len = parentNode.children.length;
-        if (is('Number', num) && num > 0) {
-          currNode = parentNode.children[num];
-        } else {
-          currNode = parentNode.children[0];
-        }
-        this.node = currNode;
-        this.path.push(currNode);
-        break;
-      // skip to a node relative to the end of the array
-      case 'end':
-        this.path.pop();
-        parentNode = this.path[this.path.length - 1];
-        var end = parentNode.children.length - 1;
-        if (is('Number', num) && num > 0) {
-          currNode = parentNode.children[end - num];
-        } else {
-          currNode = parentNode.children[end];
-        }
-        this.node = currNode;
-        this.path.push(currNode);
-        break;
-    }
+  /**
+   * Go to the last sibling in the current set of siblings, or a node that is "n" steps from the end;
+   * @param {number} [num] position, from end, of the page to go to
+   * @returns
+   */
+  end: function (num = 0) {
+    this.path.pop();
+    var parent = this.path[this.path.length - 1];
+    var target = parent.children.length - 1 - num;
+
+    if (target < 0) target = 0;
+    if (target >= parent.children.length) target = parent.children.length - 1;
+
+    this.node = parent.children[target];
+    this.path.push(this.node);
+    return this.node;
   },
 
   // FIXME: test this
@@ -278,12 +264,13 @@ TreeTraveler.prototype = {
   // FIXME: test this
   /**
    * Send the traveler/visitor directly to a node relative to the root node of the tree.
-   * @param {Array} position - array of indexes leading to targeted node.
+   * @param {Array} indexes - array of indexes leading to targeted node.
    */
-  sendToPosition: function (position) {
-    if (Array.isArray(position)) {
-      this.reset();
-      this.down(position);
+  sendToPosition: function (indexes) {
+    if (Array.isArray(indexes)) {
+      this.path = [this.root]
+      this.node = this.root;
+      this.down(indexes);
     }
   },
 

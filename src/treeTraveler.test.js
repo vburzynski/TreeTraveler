@@ -701,22 +701,84 @@ describe('TreeTraveler', function () {
     });
   });
 
-  describe('skip()', function () {
+  describe('.start()', function () {
     beforeEach(function () {
-      setupTree();
+      var root = TreeNode.buildTreeFromArray(treeFixtureB);
+      traveler = new TreeTraveler(root);
+      var positions = [1, 0, 2];
+      [traveler.path, traveler.node] = positions.reduce((accumulator, position) => {
+        var [path, node] = accumulator;
+        var child = node.children[position]
+        path.push(child);
+        return [path, child];
+      }, [[], root]);
     });
 
-    it('skips to the front of the child array');
-    it('skips to the end of the child array');
+    it('skips to the front of the child array', function () {
+      expect(traveler.node.object).to.equal(10);
+      traveler.start();
+      expect(traveler.node.object).to.equal(8);
+    });
+
+    it('jumps n items from the start of the child array', function () {
+      expect(traveler.node.object).to.equal(10);
+      traveler.start(3);
+      expect(traveler.node.object).to.equal(11);
+    });
+  });
+
+  function setTravelerState(indexes) {
+    [traveler.path, traveler.node] = indexes.reduce((accumulator, index) => {
+      var [path, node] = accumulator;
+      var child = node.children[index]
+      path.push(child);
+      return [path, child];
+    }, [[traveler.root], traveler.root]);
+  }
+
+  describe('.end()', function () {
+    beforeEach(function () {
+      var root = TreeNode.buildTreeFromArray(treeFixtureB);
+      traveler = new TreeTraveler(root);
+      setTravelerState([1, 0, 2]);
+    });
+
+    it('skips to the end of the child array', function () {
+      expect(traveler.node.object).to.equal(10);
+      traveler.end();
+      expect(traveler.node.object).to.equal(12);
+    });
+
+    it('jumps n items from the end of the child array', function () {
+      expect(traveler.node.object).to.equal(10);
+      traveler.end(3);
+      expect(traveler.node.object).to.equal(9);
+    });
   });
 
   describe('up()', function () {
     beforeEach(function () {
       setupTree();
+      setTravelerState([0,0,0])
     });
 
-    it('moves up the specified number of nodes along the path');
-    it('does not move past the root node');
+    it('moves up one level if no number is provided', function () {
+      expect(traveler.node.object).to.equal(7);
+      traveler.up();
+      expect(traveler.node.object).to.equal(4);
+    });
+
+    it('moves up the specified number of nodes along the path', function () {
+      expect(traveler.node.object).to.equal(7);
+      traveler.up(2);
+      expect(traveler.node.object).to.equal(2);
+    });
+
+    it('does not move past the root node', function () {
+      expect(traveler.node.object).to.equal(7);
+      traveler.up(10);
+      expect(traveler.node.object).to.equal(1);
+    });
   });
 
   describe('down()', function () {
@@ -724,7 +786,15 @@ describe('TreeTraveler', function () {
       setupTree();
     });
 
-    it('moves to a descendent of the current node');
+    it('moves to a descendent of the current node when given a path with a single index', function () {
+      traveler.down([0]);
+      expect(traveler.node.object).to.equal(2);
+    });
+
+    it('moves to a descendent of the current node when given a path with multiple indexes', function () {
+      traveler.down([0, 1]);
+      expect(traveler.node.object).to.equal(5);
+    });
   });
 
   describe('sendToNode()', function () {
@@ -732,7 +802,20 @@ describe('TreeTraveler', function () {
       setupTree();
     });
 
-    it('moves to a descendent of the root node');
+    it('moves to the specified node', function() {
+      let node, path = [traveler.root];
+      node = traveler.root.children[1];
+      path.push(node);
+      node = node.children[0];
+      path.push(node);
+      node = node.children[0];
+      path.push(node);
+      // sanity check/guard assertion - make sure we're on the expected starting node
+      expect(node.object).to.equal(8);
+      traveler.sendToNode(node);
+      expect(traveler.node).to.equal(node);
+      expect(traveler.path).to.deep.equal(path);
+    });
   });
 
   describe('sendToPosition()', function () {
@@ -740,8 +823,11 @@ describe('TreeTraveler', function () {
       setupTree();
     });
 
-    it('moves to a specific position in the order traversal');
-    it('has bounds which are constrained by the number of items in the tree');
+    it('moves to a specific position in the order traversal', function() {
+      traveler.sendToPosition([1,0,0]);
+      expect(traveler.node.object).to.equal(8);
+      expect(traveler.path.map((node) => node.object)).to.deep.equal([1,3,6,8]);
+    });
   });
 
   // FUTURE: perhaps build a separate binary tree traversal? it would need far more functionality for various searches and balancing, etc.
