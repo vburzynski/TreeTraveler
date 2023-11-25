@@ -76,6 +76,7 @@ inverse-preorder                                                      9 8 6 3 5 
 describe('TreeTraveler', function () {
   var traveler;
   var treeFixtureA = [1, [2, [4, [7], 5], 3, [6, [8, 9]]]];
+  var treeFixtureB = [1, [2, [4, [7], 5], 3, [6, [8, 9, 10, 11, 12]]]];
   var _treeFixtureB = ['A', ['B', ['D', 'E'], 'C', ['F', 'G']]];
 
   function setupTree(options = {}) {
@@ -662,13 +663,49 @@ describe('TreeTraveler', function () {
     });
   });
 
+  describe('sibling()', function () {
+    beforeEach(function () {
+      var root = TreeNode.buildTreeFromArray(treeFixtureB);
+      traveler = new TreeTraveler(root);
+      var positions = [1, 0, 2];
+      [traveler.path, traveler.node] = positions.reduce((accumulator, position) => {
+        var [path, node] = accumulator;
+        var child = node.children[position]
+        path.push(child);
+        return [path, child];
+      }, [[], root]);
+    });
+
+    it('advances to the next sibling when 1 is passed in as the delta', function () {
+      expect(traveler.node.object).to.equal(10);
+      traveler.sibling(1);
+      expect(traveler.node.object).to.equal(11);
+    });
+
+    it('retreats to the previous sibling when -1 is pased in as the delta', function () {
+      expect(traveler.node.object).to.equal(10);
+      traveler.sibling(-1);
+      expect(traveler.node.object).to.equal(9);
+    });
+
+    it('enforces a lower bound when travelling to younger siblings', function () {
+      expect(traveler.node.object).to.equal(10);
+      traveler.sibling(-5);
+      expect(traveler.node.object).to.equal(8);
+    });
+
+    it('enforces an upper bound when travelling to younger siblings', function () {
+      expect(traveler.node.object).to.equal(10);
+      traveler.sibling(5);
+      expect(traveler.node.object).to.equal(12);
+    });
+  });
+
   describe('skip()', function () {
     beforeEach(function () {
       setupTree();
     });
 
-    it('skips to an older sibling');
-    it('skips to a younger sibling');
     it('skips to the front of the child array');
     it('skips to the end of the child array');
   });

@@ -1,4 +1,3 @@
-var TreeNode = require('./treeNode');
 var Searcher = require('./Searcher');
 
 var defaults = {
@@ -10,20 +9,12 @@ function is(type, obj) {
   return obj !== undefined && obj !== null && type === Object.prototype.toString.call(obj).slice(8, -1);
 }
 
-// TODO: original code was mixing up concepts -- tree, and iterators -- refactor
-//       so we could have Tree and TreeTraveler/TreeIterator
-// TODO: add parent node to TreeNode??? this would get rid of the path
-// TODO: get rid of path (maybe not?)
-//       counter point -- for some tree algorithms you always start from the root
 // TODO: break up the skip() function -- it's confusing, also too long of a method. break into multiple
 //       you can specify prev(3) or next(3) instead?
-// TODO: if I changed the destroy() test, I wouldn't need the build() callback.
 // TODO: is it worth having the callback to call something like onBuild()/onAttach() in the nodes? or would it be better to do that separately?
-// TODO: consider getting rid of settings object. there's not enough to justify it? collapse it down. -- NOT SURE about this one
 // TODO: test sendToNode()
 // TODO: test sendToPosition()
 // TODO: test search()
-// TODO: convert into a class? or keep prototypal?
 
 /**
  * Indicates whether a order value is valid or not
@@ -75,15 +66,6 @@ TreeTraveler.prototype = {
    * @type {TreeNode[]}
    */
   path: null,
-
-  /**
-   * Builds a tree from an array
-   * @param {Array} arr multi-dimensional array of values
-   */
-  // build: function (arr, callback = () => {}) {
-  //   this.root = TreeNode.buildTreeFromArray(arr, null, callback);
-  //   this.reset();
-  // },
 
   /**
    * Sets the order in which the TreeTraveler will travel the tree
@@ -206,6 +188,26 @@ TreeTraveler.prototype = {
     }
   },
 
+  sibling(delta) {
+    // when we're on the root node, there are no siblings
+    if (this.path.length < 2) return;
+    // nothing to do if we're not moving
+    if (delta === 0) return;
+
+    this.path.pop();
+    var parent = this.path[this.path.length - 1];
+    var index = parent.children.indexOf(this.node);
+    var target = index + delta;
+
+    // don't go beyond the bounds
+    if (target < 0) target = 0;
+    if (target >= parent.children.length) target = parent.children.length - 1;
+
+    this.node = parent.children[target]
+    this.path.push(this.node);
+    return this.node;
+  },
+
   // FIXME: refactor and test
   /**
    * Skip to a sibling or ancestor of the current node. Use the down() method to drill down into the descendents of a node.
@@ -230,35 +232,6 @@ TreeTraveler.prototype = {
 
     // determine the directionality of our movement
     switch (direction) {
-      // skip to a sibling
-      case 'sibling':
-        if (is('Number', num) && num !== 0) {
-          currNode = this.path.pop();
-          parentNode = this.path[this.path.length - 1];
-          // get index of node in parent's children array
-          var i = parentNode.children.indexOf(currNode) + 1;
-          // get number of siblings
-          len = parentNode.children.length;
-
-          if (num > 0) {
-            // if index is not past the end of the array
-            if (i + num < len) {
-              currNode = parentNode.children[i + num];
-            } else {
-              // otherwise use last sibling
-              currNode = parentNode.children[len - 1];
-            }
-          } else {
-            if (i + num > 0) {
-              currNode = parentNode.children[i + num];
-            } else {
-              currNode = parentNode.children[0];
-            }
-          }
-          this.node = currNode;
-          this.path.push(currNode);
-        }
-        break;
       // skip to a node relative to the start/front of the array
       case 'start':
       case 'front':
