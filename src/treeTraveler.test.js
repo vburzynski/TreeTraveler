@@ -133,7 +133,7 @@ describe('TreeTraveler', function () {
         traveler.setOrder('preorder');
         traveler.next();
         traveler.reset();
-        expect(traveler.node.object).to.equal(1);
+        expect(traveler.node.value).to.equal(1);
       });
     });
 
@@ -142,7 +142,7 @@ describe('TreeTraveler', function () {
         traveler.setOrder('reverse-preorder');
         traveler.next();
         traveler.reset();
-        expect(traveler.node.object).to.equal(1);
+        expect(traveler.node.value).to.equal(1);
       });
     });
 
@@ -151,7 +151,7 @@ describe('TreeTraveler', function () {
         traveler.setOrder('postorder');
         traveler.next();
         traveler.reset();
-        expect(traveler.node.object).to.equal(7);
+        expect(traveler.node.value).to.equal(7);
       });
     });
 
@@ -160,7 +160,7 @@ describe('TreeTraveler', function () {
         traveler.setOrder('reverse-postorder');
         traveler.next();
         traveler.reset();
-        expect(traveler.node.object).to.equal(9);
+        expect(traveler.node.value).to.equal(9);
       });
     });
 
@@ -169,7 +169,7 @@ describe('TreeTraveler', function () {
         traveler.setOrder('inorder');
         traveler.next();
         traveler.reset();
-        expect(traveler.node.object).to.equal(7);
+        expect(traveler.node.value).to.equal(7);
       });
     });
 
@@ -178,7 +178,7 @@ describe('TreeTraveler', function () {
         traveler.setOrder('reverseorder');
         traveler.next();
         traveler.reset();
-        expect(traveler.node.object).to.equal(3);
+        expect(traveler.node.value).to.equal(3);
       });
     });
 
@@ -187,7 +187,7 @@ describe('TreeTraveler', function () {
         traveler.setOrder('levelorder');
         traveler.next();
         traveler.reset();
-        expect(traveler.node.object).to.equal(1);
+        expect(traveler.node.value).to.equal(1);
       });
     });
 
@@ -196,7 +196,7 @@ describe('TreeTraveler', function () {
         traveler.setOrder('reverse-levelorder');
         traveler.next();
         traveler.reset();
-        expect(traveler.node.object).to.equal(1);
+        expect(traveler.node.value).to.equal(1);
       });
     });
   });
@@ -213,12 +213,11 @@ describe('TreeTraveler', function () {
       // Act
       var i;
       traveler.destroy(true);
-      console.log('destroyed');
 
       // Assert - all the tree nodes should not exist
       expect(traveler.root).to.be.null;
       for (i = 0; i < queue.length; i++) {
-        expect(queue[i].object).to.not.exist;
+        expect(queue[i].value).to.not.exist;
         expect(queue[i].children).to.not.exist;
       }
     });
@@ -246,7 +245,7 @@ describe('TreeTraveler', function () {
   });
 
   // TODO: break these up into propert arrange-act-assert patterned tests
-  describe('next()', function () {
+  describe('.next()', function () {
     describe('when order is preorder', function () {
       beforeEach(function () {
         setupTree({ order: 'preorder' });
@@ -254,70 +253,70 @@ describe('TreeTraveler', function () {
 
       it('travels to the next node', function () {
         //'1 2 4 7 5 3 6 8 9 '
-        expect(traveler.node.object).to.equal(1);
-        expect(traveler.path[0].object).to.equal(1);
+        expect(traveler.node.value).to.equal(1);
+        expect(traveler.path[0].value).to.equal(1);
 
         traveler.next();
-        expect(traveler.node.object).to.equal(2);
-        expect(traveler.path[0].object).to.equal(1);
-        expect(traveler.path[1].object).to.equal(2);
+        expect(traveler.node.value).to.equal(2);
+        expect(traveler.path[0].value).to.equal(1);
+        expect(traveler.path[1].value).to.equal(2);
 
         traveler.next();
-        expect(traveler.node.object).to.equal(4);
-        expect(traveler.path[0].object).to.equal(1);
-        expect(traveler.path[1].object).to.equal(2);
-        expect(traveler.path[2].object).to.equal(4);
+        expect(traveler.node.value).to.equal(4);
+        expect(traveler.path[0].value).to.equal(1);
+        expect(traveler.path[1].value).to.equal(2);
+        expect(traveler.path[2].value).to.equal(4);
 
         traveler.next();
-        expect(traveler.node.object).to.equal(7);
-        expect(traveler.path[0].object).to.equal(1);
-        expect(traveler.path[1].object).to.equal(2);
-        expect(traveler.path[2].object).to.equal(4);
-        expect(traveler.path[3].object).to.equal(7);
+        expect(traveler.node.value).to.equal(7);
+        expect(traveler.path[0].value).to.equal(1);
+        expect(traveler.path[1].value).to.equal(2);
+        expect(traveler.path[2].value).to.equal(4);
+        expect(traveler.path[3].value).to.equal(7);
 
         traveler.next();
-        expect(traveler.path[0].object).to.equal(1);
-        expect(traveler.path[1].object).to.equal(2);
-        expect(traveler.path[2].object).to.equal(5);
-        expect(traveler.node.object).to.equal(5);
+        expect(traveler.path[0].value).to.equal(1);
+        expect(traveler.path[1].value).to.equal(2);
+        expect(traveler.path[2].value).to.equal(5);
+        expect(traveler.node.value).to.equal(5);
 
         traveler.next();
-        expect(traveler.node.object).to.equal(3);
+        expect(traveler.node.value).to.equal(3);
         traveler.next();
-        expect(traveler.node.object).to.equal(6);
+        expect(traveler.node.value).to.equal(6);
         traveler.next();
-        expect(traveler.node.object).to.equal(8);
+        expect(traveler.node.value).to.equal(8);
         traveler.next();
-        expect(traveler.node.object).to.equal(9);
+        expect(traveler.node.value).to.equal(9);
       });
 
       it('utilizes the condition function', function () {
-        traveler.conditionCheck = (node) => node.object % 2 === 0;
+        traveler.conditionCheck = (node) => node.value % 2 === 0;
         traveler.setOrder('preorder');
-        expect(traveler.node.object).to.equal(2);
+        expect(traveler.node.value).to.equal(2);
         traveler.next();
-        expect(traveler.node.object).to.equal(4);
+        expect(traveler.node.value).to.equal(4);
         traveler.next();
-        expect(traveler.node.object).to.equal(6);
+        expect(traveler.node.value).to.equal(6);
         traveler.next();
-        expect(traveler.node.object).to.equal(8);
+        expect(traveler.node.value).to.equal(8);
       });
 
       it('accepts the number of steps to take as an argument', function () {
         traveler.next(3);
-        expect(traveler.node.object).to.equal(7);
-        expect(traveler.path.map((node) => node.object)).to.deep.equal([1, 2, 4, 7]);
+        expect(traveler.node.value).to.equal(7);
+        expect(traveler.path.map((node) => node.value)).to.deep.equal([1, 2, 4, 7]);
       });
 
       it('does not travel past the final node in the sequence', function () {
         traveler.next(100);
-        expect(traveler.node.object).to.equal(9);
+        expect(traveler.node.value).to.equal(9);
       });
 
       it('accepts an optional direction argument', function () {
         traveler.next(3);
         traveler.next(1, 'backwards');
-        expect(traveler.node.object).to.equal(4);
+        expect(traveler.node.value).to.equal(4);
       });
     });
 
@@ -328,69 +327,69 @@ describe('TreeTraveler', function () {
 
       it('travels to the next node', function () {
         //'7 4 2 5 1 8 6 9 3 '
-        expect(traveler.node.object).to.equal(7);
+        expect(traveler.node.value).to.equal(7);
         traveler.next();
-        expect(traveler.node.object).to.equal(4);
+        expect(traveler.node.value).to.equal(4);
         traveler.next();
-        expect(traveler.node.object).to.equal(2);
+        expect(traveler.node.value).to.equal(2);
         traveler.next();
-        expect(traveler.node.object).to.equal(5);
+        expect(traveler.node.value).to.equal(5);
         traveler.next();
-        expect(traveler.node.object).to.equal(1);
+        expect(traveler.node.value).to.equal(1);
         traveler.next();
-        expect(traveler.node.object).to.equal(8);
+        expect(traveler.node.value).to.equal(8);
         traveler.next();
-        expect(traveler.node.object).to.equal(6);
+        expect(traveler.node.value).to.equal(6);
         traveler.next();
-        expect(traveler.node.object).to.equal(9);
+        expect(traveler.node.value).to.equal(9);
         traveler.next();
-        expect(traveler.node.object).to.equal(3);
+        expect(traveler.node.value).to.equal(3);
       });
 
       it('stops at the end of the order', function () {
-        expect(traveler.node.object).to.equal(7);
+        expect(traveler.node.value).to.equal(7);
         traveler.next();
-        expect(traveler.node.object).to.equal(4);
+        expect(traveler.node.value).to.equal(4);
         traveler.next();
-        expect(traveler.node.object).to.equal(2);
+        expect(traveler.node.value).to.equal(2);
         traveler.next();
-        expect(traveler.node.object).to.equal(5);
+        expect(traveler.node.value).to.equal(5);
         traveler.next();
-        expect(traveler.node.object).to.equal(1);
+        expect(traveler.node.value).to.equal(1);
         traveler.next();
-        expect(traveler.node.object).to.equal(8);
+        expect(traveler.node.value).to.equal(8);
         traveler.next();
-        expect(traveler.node.object).to.equal(6);
+        expect(traveler.node.value).to.equal(6);
         traveler.next();
-        expect(traveler.node.object).to.equal(9);
+        expect(traveler.node.value).to.equal(9);
         traveler.next();
-        expect(traveler.node.object).to.equal(3);
+        expect(traveler.node.value).to.equal(3);
         traveler.next();
-        expect(traveler.node.object).to.equal(3);
+        expect(traveler.node.value).to.equal(3);
       });
 
       it('loops around if shouldLoop is set to true', function () {
         traveler.settings.shouldLoop = true;
         //'7 4 2 5 1 8 6 9 3 '
-        expect(traveler.node.object).to.equal(7);
+        expect(traveler.node.value).to.equal(7);
         traveler.next();
-        expect(traveler.node.object).to.equal(4);
+        expect(traveler.node.value).to.equal(4);
         traveler.next();
-        expect(traveler.node.object).to.equal(2);
+        expect(traveler.node.value).to.equal(2);
         traveler.next();
-        expect(traveler.node.object).to.equal(5);
+        expect(traveler.node.value).to.equal(5);
         traveler.next();
-        expect(traveler.node.object).to.equal(1);
+        expect(traveler.node.value).to.equal(1);
         traveler.next();
-        expect(traveler.node.object).to.equal(8);
+        expect(traveler.node.value).to.equal(8);
         traveler.next();
-        expect(traveler.node.object).to.equal(6);
+        expect(traveler.node.value).to.equal(6);
         traveler.next();
-        expect(traveler.node.object).to.equal(9);
+        expect(traveler.node.value).to.equal(9);
         traveler.next();
-        expect(traveler.node.object).to.equal(3);
+        expect(traveler.node.value).to.equal(3);
         traveler.next();
-        expect(traveler.node.object).to.equal(7);
+        expect(traveler.node.value).to.equal(7);
       });
     });
 
@@ -402,23 +401,23 @@ describe('TreeTraveler', function () {
       it('travels to the next node', function () {
         //'7 4 5 2 8 9 6 3 1 '
         traveler.setOrder('postorder');
-        expect(traveler.node.object).to.equal(7);
+        expect(traveler.node.value).to.equal(7);
         traveler.next();
-        expect(traveler.node.object).to.equal(4);
+        expect(traveler.node.value).to.equal(4);
         traveler.next();
-        expect(traveler.node.object).to.equal(5);
+        expect(traveler.node.value).to.equal(5);
         traveler.next();
-        expect(traveler.node.object).to.equal(2);
+        expect(traveler.node.value).to.equal(2);
         traveler.next();
-        expect(traveler.node.object).to.equal(8);
+        expect(traveler.node.value).to.equal(8);
         traveler.next();
-        expect(traveler.node.object).to.equal(9);
+        expect(traveler.node.value).to.equal(9);
         traveler.next();
-        expect(traveler.node.object).to.equal(6);
+        expect(traveler.node.value).to.equal(6);
         traveler.next();
-        expect(traveler.node.object).to.equal(3);
+        expect(traveler.node.value).to.equal(3);
         traveler.next();
-        expect(traveler.node.object).to.equal(1);
+        expect(traveler.node.value).to.equal(1);
       });
     });
 
@@ -429,23 +428,23 @@ describe('TreeTraveler', function () {
 
       it('travels to the next node', function () {
         //1 3 6 9 8 2 5 4 7
-        expect(traveler.node.object).to.equal(1);
+        expect(traveler.node.value).to.equal(1);
         traveler.next();
-        expect(traveler.node.object).to.equal(3);
+        expect(traveler.node.value).to.equal(3);
         traveler.next();
-        expect(traveler.node.object).to.equal(6);
+        expect(traveler.node.value).to.equal(6);
         traveler.next();
-        expect(traveler.node.object).to.equal(9);
+        expect(traveler.node.value).to.equal(9);
         traveler.next();
-        expect(traveler.node.object).to.equal(8);
+        expect(traveler.node.value).to.equal(8);
         traveler.next();
-        expect(traveler.node.object).to.equal(2);
+        expect(traveler.node.value).to.equal(2);
         traveler.next();
-        expect(traveler.node.object).to.equal(5);
+        expect(traveler.node.value).to.equal(5);
         traveler.next();
-        expect(traveler.node.object).to.equal(4);
+        expect(traveler.node.value).to.equal(4);
         traveler.next();
-        expect(traveler.node.object).to.equal(7);
+        expect(traveler.node.value).to.equal(7);
       });
     });
 
@@ -456,23 +455,23 @@ describe('TreeTraveler', function () {
 
       it('travels to the next node', function () {
         //9 8 6 3 5 7 4 2 1
-        expect(traveler.node.object).to.equal(9);
+        expect(traveler.node.value).to.equal(9);
         traveler.next();
-        expect(traveler.node.object).to.equal(8);
+        expect(traveler.node.value).to.equal(8);
         traveler.next();
-        expect(traveler.node.object).to.equal(6);
+        expect(traveler.node.value).to.equal(6);
         traveler.next();
-        expect(traveler.node.object).to.equal(3);
+        expect(traveler.node.value).to.equal(3);
         traveler.next();
-        expect(traveler.node.object).to.equal(5);
+        expect(traveler.node.value).to.equal(5);
         traveler.next();
-        expect(traveler.node.object).to.equal(7);
+        expect(traveler.node.value).to.equal(7);
         traveler.next();
-        expect(traveler.node.object).to.equal(4);
+        expect(traveler.node.value).to.equal(4);
         traveler.next();
-        expect(traveler.node.object).to.equal(2);
+        expect(traveler.node.value).to.equal(2);
         traveler.next();
-        expect(traveler.node.object).to.equal(1);
+        expect(traveler.node.value).to.equal(1);
       });
     });
 
@@ -483,29 +482,29 @@ describe('TreeTraveler', function () {
 
       it('travels to the next node', function () {
         //3 9 6 8 1 5 2 4 7
-        expect(traveler.node.object).to.equal(3);
+        expect(traveler.node.value).to.equal(3);
         traveler.next();
-        expect(traveler.node.object).to.equal(9);
+        expect(traveler.node.value).to.equal(9);
         traveler.next();
-        expect(traveler.node.object).to.equal(6);
+        expect(traveler.node.value).to.equal(6);
         traveler.next();
-        expect(traveler.node.object).to.equal(8);
+        expect(traveler.node.value).to.equal(8);
         traveler.next();
-        expect(traveler.node.object).to.equal(1);
+        expect(traveler.node.value).to.equal(1);
         traveler.next();
-        expect(traveler.node.object).to.equal(5);
+        expect(traveler.node.value).to.equal(5);
         traveler.next();
-        expect(traveler.node.object).to.equal(2);
+        expect(traveler.node.value).to.equal(2);
         traveler.next();
-        expect(traveler.node.object).to.equal(4);
+        expect(traveler.node.value).to.equal(4);
         traveler.next();
-        expect(traveler.node.object).to.equal(7);
+        expect(traveler.node.value).to.equal(7);
       });
     });
   });
 
   // TODO: break these up into propert arrange-act-assert patterned tests
-  describe('prev()', function () {
+  describe('.prev()', function () {
     beforeEach(function () {
       setupTree();
     });
@@ -523,66 +522,66 @@ describe('TreeTraveler', function () {
       traveler.next();
       traveler.next();
       // travel back
-      expect(traveler.node.object).to.equal(9);
+      expect(traveler.node.value).to.equal(9);
       traveler.back();
-      expect(traveler.node.object).to.equal(8);
+      expect(traveler.node.value).to.equal(8);
       traveler.back();
-      expect(traveler.node.object).to.equal(6);
+      expect(traveler.node.value).to.equal(6);
       traveler.back();
-      expect(traveler.node.object).to.equal(3);
+      expect(traveler.node.value).to.equal(3);
       traveler.back();
-      expect(traveler.node.object).to.equal(5);
+      expect(traveler.node.value).to.equal(5);
       traveler.back();
-      expect(traveler.node.object).to.equal(7);
+      expect(traveler.node.value).to.equal(7);
       traveler.back();
-      expect(traveler.node.object).to.equal(4);
+      expect(traveler.node.value).to.equal(4);
       traveler.back();
-      expect(traveler.node.object).to.equal(2);
+      expect(traveler.node.value).to.equal(2);
       traveler.back();
-      expect(traveler.node.object).to.equal(1);
+      expect(traveler.node.value).to.equal(1);
     });
 
     it('travels to the previous node when order is "inorder"', function () {
       traveler.setOrder('inorder');
       // 7 4 2 5 1 8 6 9 3
       traveler.back();
-      expect(traveler.node.object).to.equal(7);
+      expect(traveler.node.value).to.equal(7);
       traveler.next();
-      expect(traveler.node.object).to.equal(4);
+      expect(traveler.node.value).to.equal(4);
       traveler.next();
-      expect(traveler.node.object).to.equal(2);
+      expect(traveler.node.value).to.equal(2);
       traveler.next();
-      expect(traveler.node.object).to.equal(5);
+      expect(traveler.node.value).to.equal(5);
       traveler.next();
-      expect(traveler.node.object).to.equal(1);
+      expect(traveler.node.value).to.equal(1);
       traveler.next();
-      expect(traveler.node.object).to.equal(8);
+      expect(traveler.node.value).to.equal(8);
       traveler.next();
-      expect(traveler.node.object).to.equal(6);
+      expect(traveler.node.value).to.equal(6);
       traveler.next();
-      expect(traveler.node.object).to.equal(9);
+      expect(traveler.node.value).to.equal(9);
       traveler.next();
-      expect(traveler.node.object).to.equal(3);
+      expect(traveler.node.value).to.equal(3);
       // travel back
-      expect(traveler.node.object).to.equal(3);
+      expect(traveler.node.value).to.equal(3);
       traveler.back();
-      expect(traveler.node.object).to.equal(9);
+      expect(traveler.node.value).to.equal(9);
       traveler.back();
-      expect(traveler.node.object).to.equal(6);
+      expect(traveler.node.value).to.equal(6);
       traveler.back();
-      expect(traveler.node.object).to.equal(8);
+      expect(traveler.node.value).to.equal(8);
       traveler.back();
-      expect(traveler.node.object).to.equal(1);
+      expect(traveler.node.value).to.equal(1);
       traveler.back();
-      expect(traveler.node.object).to.equal(5);
+      expect(traveler.node.value).to.equal(5);
       traveler.back();
-      expect(traveler.node.object).to.equal(2);
+      expect(traveler.node.value).to.equal(2);
       traveler.back();
-      expect(traveler.node.object).to.equal(4);
+      expect(traveler.node.value).to.equal(4);
       traveler.back();
-      expect(traveler.node.object).to.equal(7);
+      expect(traveler.node.value).to.equal(7);
       traveler.back();
-      expect(traveler.node.object).to.equal(7);
+      expect(traveler.node.value).to.equal(7);
     });
 
     it('travels to the previous node when order is "postorder"', function () {
@@ -596,68 +595,68 @@ describe('TreeTraveler', function () {
       traveler.next();
       traveler.next();
       traveler.next();
-      expect(traveler.node.object).to.equal(1);
+      expect(traveler.node.value).to.equal(1);
       traveler.back();
-      expect(traveler.node.object).to.equal(3);
+      expect(traveler.node.value).to.equal(3);
       traveler.back();
-      expect(traveler.node.object).to.equal(6);
+      expect(traveler.node.value).to.equal(6);
       traveler.back();
-      expect(traveler.node.object).to.equal(9);
+      expect(traveler.node.value).to.equal(9);
       traveler.back();
-      expect(traveler.node.object).to.equal(8);
+      expect(traveler.node.value).to.equal(8);
       traveler.back();
-      expect(traveler.node.object).to.equal(2);
+      expect(traveler.node.value).to.equal(2);
       traveler.back();
-      expect(traveler.node.object).to.equal(5);
+      expect(traveler.node.value).to.equal(5);
       traveler.back();
-      expect(traveler.node.object).to.equal(4);
+      expect(traveler.node.value).to.equal(4);
       traveler.back();
-      expect(traveler.node.object).to.equal(7);
+      expect(traveler.node.value).to.equal(7);
     });
 
     it('stops at the beginning of the order', function () {
       // 7 4 2 5 1 8 6 9 3
       traveler.setOrder('inorder');
       traveler.back();
-      expect(traveler.node.object).to.equal(7);
+      expect(traveler.node.value).to.equal(7);
       traveler.next();
-      expect(traveler.node.object).to.equal(4);
+      expect(traveler.node.value).to.equal(4);
       traveler.next();
-      expect(traveler.node.object).to.equal(2);
+      expect(traveler.node.value).to.equal(2);
       traveler.next();
-      expect(traveler.node.object).to.equal(5);
+      expect(traveler.node.value).to.equal(5);
       traveler.next();
-      expect(traveler.node.object).to.equal(1);
+      expect(traveler.node.value).to.equal(1);
       traveler.next();
-      expect(traveler.node.object).to.equal(8);
+      expect(traveler.node.value).to.equal(8);
       traveler.next();
-      expect(traveler.node.object).to.equal(6);
+      expect(traveler.node.value).to.equal(6);
       traveler.next();
-      expect(traveler.node.object).to.equal(9);
+      expect(traveler.node.value).to.equal(9);
       traveler.next();
-      expect(traveler.node.object).to.equal(3);
+      expect(traveler.node.value).to.equal(3);
       traveler.back();
-      expect(traveler.node.object).to.equal(9);
+      expect(traveler.node.value).to.equal(9);
       traveler.back();
-      expect(traveler.node.object).to.equal(6);
+      expect(traveler.node.value).to.equal(6);
       traveler.back();
-      expect(traveler.node.object).to.equal(8);
+      expect(traveler.node.value).to.equal(8);
       traveler.back();
-      expect(traveler.node.object).to.equal(1);
+      expect(traveler.node.value).to.equal(1);
       traveler.back();
-      expect(traveler.node.object).to.equal(5);
+      expect(traveler.node.value).to.equal(5);
       traveler.back();
-      expect(traveler.node.object).to.equal(2);
+      expect(traveler.node.value).to.equal(2);
       traveler.back();
-      expect(traveler.node.object).to.equal(4);
+      expect(traveler.node.value).to.equal(4);
       traveler.back();
-      expect(traveler.node.object).to.equal(7);
+      expect(traveler.node.value).to.equal(7);
       traveler.back();
-      expect(traveler.node.object).to.equal(7);
+      expect(traveler.node.value).to.equal(7);
     });
   });
 
-  describe('sibling()', function () {
+  describe('.sibling()', function () {
     beforeEach(function () {
       var root = TreeNode.buildTreeFromArray(treeFixtureB);
       traveler = new TreeTraveler(root);
@@ -671,27 +670,27 @@ describe('TreeTraveler', function () {
     });
 
     it('advances to the next sibling when 1 is passed in as the delta', function () {
-      expect(traveler.node.object).to.equal(10);
+      expect(traveler.node.value).to.equal(10);
       traveler.sibling(1);
-      expect(traveler.node.object).to.equal(11);
+      expect(traveler.node.value).to.equal(11);
     });
 
     it('retreats to the previous sibling when -1 is pased in as the delta', function () {
-      expect(traveler.node.object).to.equal(10);
+      expect(traveler.node.value).to.equal(10);
       traveler.sibling(-1);
-      expect(traveler.node.object).to.equal(9);
+      expect(traveler.node.value).to.equal(9);
     });
 
     it('enforces a lower bound when travelling to younger siblings', function () {
-      expect(traveler.node.object).to.equal(10);
+      expect(traveler.node.value).to.equal(10);
       traveler.sibling(-5);
-      expect(traveler.node.object).to.equal(8);
+      expect(traveler.node.value).to.equal(8);
     });
 
     it('enforces an upper bound when travelling to younger siblings', function () {
-      expect(traveler.node.object).to.equal(10);
+      expect(traveler.node.value).to.equal(10);
       traveler.sibling(5);
-      expect(traveler.node.object).to.equal(12);
+      expect(traveler.node.value).to.equal(12);
     });
   });
 
@@ -709,15 +708,15 @@ describe('TreeTraveler', function () {
     });
 
     it('skips to the front of the child array', function () {
-      expect(traveler.node.object).to.equal(10);
+      expect(traveler.node.value).to.equal(10);
       traveler.start();
-      expect(traveler.node.object).to.equal(8);
+      expect(traveler.node.value).to.equal(8);
     });
 
     it('jumps n items from the start of the child array', function () {
-      expect(traveler.node.object).to.equal(10);
+      expect(traveler.node.value).to.equal(10);
       traveler.start(3);
-      expect(traveler.node.object).to.equal(11);
+      expect(traveler.node.value).to.equal(11);
     });
   });
 
@@ -738,60 +737,60 @@ describe('TreeTraveler', function () {
     });
 
     it('skips to the end of the child array', function () {
-      expect(traveler.node.object).to.equal(10);
+      expect(traveler.node.value).to.equal(10);
       traveler.end();
-      expect(traveler.node.object).to.equal(12);
+      expect(traveler.node.value).to.equal(12);
     });
 
     it('jumps n items from the end of the child array', function () {
-      expect(traveler.node.object).to.equal(10);
+      expect(traveler.node.value).to.equal(10);
       traveler.end(3);
-      expect(traveler.node.object).to.equal(9);
+      expect(traveler.node.value).to.equal(9);
     });
   });
 
-  describe('up()', function () {
+  describe('.up()', function () {
     beforeEach(function () {
       setupTree();
       setTravelerState([0,0,0])
     });
 
     it('moves up one level if no number is provided', function () {
-      expect(traveler.node.object).to.equal(7);
+      expect(traveler.node.value).to.equal(7);
       traveler.up();
-      expect(traveler.node.object).to.equal(4);
+      expect(traveler.node.value).to.equal(4);
     });
 
     it('moves up the specified number of nodes along the path', function () {
-      expect(traveler.node.object).to.equal(7);
+      expect(traveler.node.value).to.equal(7);
       traveler.up(2);
-      expect(traveler.node.object).to.equal(2);
+      expect(traveler.node.value).to.equal(2);
     });
 
     it('does not move past the root node', function () {
-      expect(traveler.node.object).to.equal(7);
+      expect(traveler.node.value).to.equal(7);
       traveler.up(10);
-      expect(traveler.node.object).to.equal(1);
+      expect(traveler.node.value).to.equal(1);
     });
   });
 
-  describe('down()', function () {
+  describe('.down()', function () {
     beforeEach(function () {
       setupTree();
     });
 
     it('moves to a descendent of the current node when given a path with a single index', function () {
       traveler.down([0]);
-      expect(traveler.node.object).to.equal(2);
+      expect(traveler.node.value).to.equal(2);
     });
 
     it('moves to a descendent of the current node when given a path with multiple indexes', function () {
       traveler.down([0, 1]);
-      expect(traveler.node.object).to.equal(5);
+      expect(traveler.node.value).to.equal(5);
     });
   });
 
-  describe('sendToNode()', function () {
+  describe('.sendToNode()', function () {
     beforeEach(function () {
       setupTree();
     });
@@ -805,22 +804,22 @@ describe('TreeTraveler', function () {
       node = node.children[0];
       path.push(node);
       // sanity check/guard assertion - make sure we're on the expected starting node
-      expect(node.object).to.equal(8);
+      expect(node.value).to.equal(8);
       traveler.sendToNode(node);
       expect(traveler.node).to.equal(node);
       expect(traveler.path).to.deep.equal(path);
     });
   });
 
-  describe('sendToPosition()', function () {
+  describe('.sendToPosition()', function () {
     beforeEach(function () {
       setupTree();
     });
 
     it('moves to a specific position in the order traversal', function() {
       traveler.sendToPosition([1,0,0]);
-      expect(traveler.node.object).to.equal(8);
-      expect(traveler.path.map((node) => node.object)).to.deep.equal([1,3,6,8]);
+      expect(traveler.node.value).to.equal(8);
+      expect(traveler.path.map((node) => node.value)).to.deep.equal([1,3,6,8]);
     });
   });
 

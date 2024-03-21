@@ -7,10 +7,9 @@ var TreeNode = function (obj) {
     return new TreeNode(obj);
   }
   if (obj) {
-    this.object = obj;
+    this.value = obj;
   }
-  this.children = new Array();
-  this.forceBinary = false;
+  this.children = [];
 };
 
 // Define all the instance methods and properties:
@@ -18,7 +17,7 @@ TreeNode.prototype = {
   /**
    * Object stored in this node
    */
-  object: null,
+  value: null,
 
   /**
    * list of child nodes
@@ -26,25 +25,25 @@ TreeNode.prototype = {
   children: null,
 
   /**
-   * set the object that this tree node holds
+   * set the value that this tree node holds
    * @param {Objedct} obj
    */
   set: function (obj) {
-    this.object = obj;
+    this.value = obj;
   },
 
   /**
-   * get the object that this tree node holds
+   * get the value that this tree node holds
    */
   get: function () {
-    return this.object;
+    return this.value;
   },
 
   /**
-   * clear the object from the tree node
+   * clear the value stored on the tree node
    */
   clear: function () {
-    this.object = null;
+    this.value = null;
   },
 
   /**

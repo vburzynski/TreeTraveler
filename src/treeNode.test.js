@@ -16,49 +16,46 @@ describe('TreeNode', function () {
       expect(node).to.be.an.instanceOf(TreeNode);
     });
     it('returns an instance of a TreeNode which stores the passed in value', function () {
-      expect(node.object).to.equal(1);
-    });
-    it('returns an instance of a TreeNode which, by default, does not expect a binary tree structure', function () {
-      expect(node.forceBinary).to.be.false;
+      expect(node.value).to.equal(1);
     });
   });
 
-  describe('set()', function () {
-    it('should set the object value of the TreeNode', function () {
+  describe('.set()', function () {
+    it('should set the value of the TreeNode', function () {
       var node = new TreeNode();
       node.set(544);
-      expect(node.object).to.equal(544);
+      expect(node.value).to.equal(544);
     });
   });
 
-  describe('get()', function () {
-    it('should return the object value of the TreeNode', function () {
+  describe('.get()', function () {
+    it('should return the value of the TreeNode', function () {
       var node = new TreeNode();
       var obj = {
         test: 666,
         key: 'testing',
       };
       node.set(obj);
-      expect(node.object).to.deep.equal(obj);
+      expect(node.value).to.deep.equal(obj);
       expect(node.get()).to.deep.equal(obj);
     });
   });
 
-  describe('clear()', function () {
-    it('should clear the object value of the TreeNode', function () {
+  describe('.clear()', function () {
+    it('should clear the value of the TreeNode', function () {
       var node = new TreeNode();
       var obj = {
         test: 666,
         key: 'testing',
       };
       node.set(obj);
-      expect(node.object).to.deep.equal(obj);
+      expect(node.value).to.deep.equal(obj);
       node.clear();
-      expect(node.object).to.be.null;
+      expect(node.value).to.be.null;
     });
   });
 
-  describe('destroy()', function () {
+  describe('.destroy()', function () {
     it('should destroy the TreeNode', function () {
       var key,
         node = new TreeNode();
@@ -70,14 +67,10 @@ describe('TreeNode', function () {
     });
   });
 
-  describe('addChild()', function () {
+  describe('.addChild()', function () {
     it('should add a child node as the next direct descendant', function () {
-      var obj1 = {
-        key: 'test',
-      };
-      var obj2 = {
-        key: 'hello world',
-      };
+      var obj1 = { key: 'test' };
+      var obj2 = { key: 'hello world' };
       var node1 = new TreeNode({});
       var node2 = new TreeNode(obj1);
       var node3 = new TreeNode(obj2);
@@ -91,17 +84,11 @@ describe('TreeNode', function () {
     });
   });
 
-  describe('addChildAt()', function () {
+  describe('.addChildAt()', function () {
     var node1 = new TreeNode({});
-    var node2 = new TreeNode({
-      key: 'test',
-    });
-    var node3 = new TreeNode({
-      key: 'hello world',
-    });
-    var node4 = new TreeNode({
-      key: 'bla bla bla',
-    });
+    var node2 = new TreeNode({ key: 'test' });
+    var node3 = new TreeNode({ key: 'hello world' });
+    var node4 = new TreeNode({ key: 'bla bla bla' });
 
     beforeEach(function () {
       node1 = new TreeNode({});
@@ -123,20 +110,14 @@ describe('TreeNode', function () {
       expect(node1.children[2]).to.equal(node2);
     });
   });
-  describe('getChildIndex()', function () {
+  describe('.getChildIndex()', function () {
     let node1, node2, node3, node4;
 
     beforeEach(function () {
       node1 = new TreeNode({});
-      node2 = new TreeNode({
-        key: 'test',
-      });
-      node3 = new TreeNode({
-        key: 'hello world',
-      });
-      node4 = new TreeNode({
-        key: 'bla bla bla',
-      });
+      node2 = new TreeNode({ key: 'test' });
+      node3 = new TreeNode({ key: 'hello world' });
+      node4 = new TreeNode({ key: 'bla bla bla' });
       node1.addChild(node2);
       node1.addChild(node3);
     });
@@ -150,19 +131,13 @@ describe('TreeNode', function () {
     });
   });
 
-  describe('hasChild()', function () {
+  describe('.hasChild()', function () {
     let node1, node2, node3, node4;
     beforeEach(function () {
       node1 = new TreeNode({});
-      node2 = new TreeNode({
-        key: 'test',
-      });
-      node3 = new TreeNode({
-        key: 'hello world',
-      });
-      node4 = new TreeNode({
-        key: 'bla bla bla',
-      });
+      node2 = new TreeNode({ key: 'test' });
+      node3 = new TreeNode({ key: 'hello world' });
+      node4 = new TreeNode({ key: 'bla bla bla' });
       node1.addChild(node2);
       node1.addChild(node3);
     });
@@ -175,16 +150,12 @@ describe('TreeNode', function () {
     });
   });
 
-  describe('getChildAt()', function () {
+  describe('.getChildAt()', function () {
     let node1, node2, node3;
     beforeEach(function () {
       node1 = new TreeNode({});
-      node2 = new TreeNode({
-        key: 'test',
-      });
-      node3 = new TreeNode({
-        key: 'hello world',
-      });
+      node2 = new TreeNode({ key: 'test' });
+      node3 = new TreeNode({ key: 'hello world' });
       node1.addChild(node2);
       node1.addChild(node3);
     });
@@ -197,20 +168,14 @@ describe('TreeNode', function () {
     });
   });
 
-  describe('removeChild()', function () {
+  describe('.removeChild()', function () {
     let node1, node2, node3, node4;
 
     beforeEach(function () {
       node1 = new TreeNode({});
-      node2 = new TreeNode({
-        key: 'test',
-      });
-      node3 = new TreeNode({
-        key: 'hello world',
-      });
-      node4 = new TreeNode({
-        key: 'bla bla bla',
-      });
+      node2 = new TreeNode({ key: 'test' });
+      node3 = new TreeNode({ key: 'hello world' });
+      node4 = new TreeNode({ key: 'bla bla bla' });
       node1.addChild(node2);
       node1.addChild(node3);
       node1.addChild(node4);
@@ -229,19 +194,13 @@ describe('TreeNode', function () {
     });
   });
 
-  describe('removeChildAt()', function () {
+  describe('.removeChildAt()', function () {
     let node1, node2, node3, node4;
     beforeEach(function () {
       node1 = new TreeNode({});
-      node2 = new TreeNode({
-        key: 'test',
-      });
-      node3 = new TreeNode({
-        key: 'hello world',
-      });
-      node4 = new TreeNode({
-        key: 'bla bla bla',
-      });
+      node2 = new TreeNode({ key: 'test' });
+      node3 = new TreeNode({ key: 'hello world' });
+      node4 = new TreeNode({ key: 'bla bla bla' });
       node1.addChild(node2);
       node1.addChild(node3);
       node1.addChild(node4);
